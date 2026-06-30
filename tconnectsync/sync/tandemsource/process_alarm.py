@@ -70,13 +70,13 @@ class ProcessAlarm:
     def alarm_to_nsentry(self, event):
         if type(event) == eventtypes.LidAlarmActivated:
             return NightscoutEntry.alarm(
-                created_at = event.eventTimestamp.format(),
+                created_at = event.eventTimestamp.isoformat(),
                 reason = "%s" % event.alarmid.name,
                 pump_event_id = "%s" % event.seqNum
             )
         elif type(event) == eventtypes.LidMalfunctionActivated:
             return NightscoutEntry.alarm(
-                created_at = event.eventTimestamp.format(),
+                created_at = event.eventTimestamp.isoformat(),
                 reason = "Malfunction",
                 pump_event_id = "%s" % event.seqNum
             )
