@@ -1,6 +1,6 @@
 import logging
 import arrow
-
+from tconnectsync.utils.time import format_datetime
 from ...features import DEFAULT_FEATURES
 from ... import features
 from ...eventparser.generic import Events, decode_raw_events, EVENT_LEN
@@ -80,21 +80,21 @@ class ProcessCartridge:
 
     def cart_to_nsentry(self, cartFilled):
         return NightscoutEntry.sitechange(
-            created_at = cartFilled.eventTimestamp.isoformat(),
+            created_at = format_datetime(cartFilled.eventTimestamp),
             reason = "Cartridge Filled" + (" (%du filled)" % round(cartFilled.v2Volume) if cartFilled.v2Volume else ""),
             pump_event_id = "%s" % cartFilled.seqNum
         )
 
     def cannula_to_nsentry(self, cannulaFilled):
         return NightscoutEntry.sitechange(
-            created_at = cannulaFilled.eventTimestamp.isoformat(),
+            created_at = format_datetime(cannulaFilled.eventTimestamp),
             reason = "Cannula Filled" + (" (%du primed)" % round(cannulaFilled.primesize, 2) if cannulaFilled.primesize else ""),
             pump_event_id = "%s" % cannulaFilled.seqNum
         )
 
     def tubing_to_nsentry(self, tubingFilled):
         return NightscoutEntry.sitechange(
-            created_at = tubingFilled.eventTimestamp.isoformat(),
+            created_at = format_datetime(tubingFilled.eventTimestamp),
             reason = "Tubing Filled" + (" (%du primed)" % round(tubingFilled.primesize) if tubingFilled.primesize else ""),
             pump_event_id = "%s" % tubingFilled.seqNum
         )
