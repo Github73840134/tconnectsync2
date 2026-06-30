@@ -12,13 +12,11 @@ from .api.common import ApiException
 from .parser.nightscout import ENTERED_BY
 
 def format_datetime(date):
-	return arrow.get(date).isoformat()
+	return arrow.get(date).to('utc').isoformat()
 
 def time_range(field_name, start_time, end_time, t_to_space=False):
 	def fmt(date):
 		ret = format_datetime(date)
-		if t_to_space:
-			return ret.replace('T', ' ')
 		return ret
 	arg = ''
 	if start_time:
