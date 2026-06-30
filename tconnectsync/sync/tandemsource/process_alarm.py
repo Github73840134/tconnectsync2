@@ -1,6 +1,7 @@
 import logging
 import arrow
 
+from tconnectsync.util.time import format_datetime
 from ...features import DEFAULT_FEATURES
 from ... import features
 from ...eventparser.generic import Events, decode_raw_events, EVENT_LEN
@@ -70,13 +71,13 @@ class ProcessAlarm:
     def alarm_to_nsentry(self, event):
         if type(event) == eventtypes.LidAlarmActivated:
             return NightscoutEntry.alarm(
-                created_at = event.eventTimestamp.isoformat(),
+                created_at = format_datetime(event.eventTimestamp),
                 reason = "%s" % event.alarmid.name,
                 pump_event_id = "%s" % event.seqNum
             )
         elif type(event) == eventtypes.LidMalfunctionActivated:
             return NightscoutEntry.alarm(
-                created_at = event.eventTimestamp.isoformat(),
+                created_at = format_datetime(event.eventTimestamp),
                 reason = "Malfunction",
                 pump_event_id = "%s" % event.seqNum
             )
