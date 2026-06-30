@@ -1,6 +1,7 @@
 import logging
 import arrow
 
+from tconnectsync.util.time import format_datetime
 from ...secret import IGNORE_ZERO_UNIT_BASAL
 from ...features import DEFAULT_FEATURES
 from ... import features
@@ -83,7 +84,7 @@ class ProcessBasal:
             return NightscoutEntry.basal(
                 value = value,
                 duration_mins = duration.seconds / 60,
-                created_at = start.isoformat(),
+                created_at = format_datetime(start),
                 reason = ', '.join(bitmask_to_list(event.changetype)),
                 pump_event_id = "%s" % event.seqNum
             )
@@ -95,7 +96,7 @@ class ProcessBasal:
             return NightscoutEntry.basal(
                 value = value,
                 duration_mins = duration.seconds / 60,
-                created_at = start.isoformat(),
+                created_at = form_ditetime(start),
                 reason = ', '.join(bitmask_to_list(event.commandedRateSource)),
                 pump_event_id = "%s" % event.seqNum
             )
