@@ -1,6 +1,6 @@
 import logging
 import arrow
-
+from tconnectsync.util.time import format_datetime
 from ...features import DEFAULT_FEATURES
 from ... import features
 from ... import secret
@@ -67,6 +67,6 @@ class ProcessCGMReading:
     def to_nsentry(self, event):
         return NightscoutEntry.entry(
             sgv = event.currentglucosedisplayvalue,
-            created_at = self.timestamp_for(event).isoformat(),
+            created_at = format_datetime(self.timestamp_for(event)),
             pump_event_id = "%s" % event.seqNum,
         )
