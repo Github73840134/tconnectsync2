@@ -1,6 +1,6 @@
 import logging
 import arrow
-
+from tconnectsync.util.time import format_datetime
 from ...features import DEFAULT_FEATURES
 from ... import features
 from ...eventparser.generic import Events, decode_raw_events, EVENT_LEN
@@ -58,7 +58,7 @@ class ProcessDeviceStatus:
 
     def daily_basal_to_nsentry(self, event):
         return NightscoutEntry.devicestatus(
-            created_at=event.eventTimestamp.format(),
+            created_at=format_datetime(event.eventTimestamp),
             batteryVoltage=(float(event.batterylipomillivolts or 0)/1000),
             batteryPercent=int(100*event.batteryChargePercent),
             pump_event_id = "%s" % event.seqNum
