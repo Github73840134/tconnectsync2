@@ -24,7 +24,7 @@ from jwt.algorithms import RSAAlgorithm
 
 from ..util import timeago, cap_length
 from .common import parse_ymd_date, base_headers, base_session, ApiException, ApiLoginException
-from ..secret import CACHE_CREDENTIALS, CACHE_CREDENTIALS_PATH
+from ..secret import CACHE_CREDENTIALS, CACHE_CREDENTIALS_PATH, TIMEZONE_NAME
 from ..eventparser.generic import Events
 
 logger = logging.getLogger(__name__)
@@ -79,26 +79,36 @@ class PumpSettingsEnvelope(TypedDict):
     details: dict
 
 
-class BffPump(TypedDict, total=False):
-    """One element of BffPumper.pumps, from GET api/reports/bff/pumper/{pumperId}.
+class BffPumpRequired(TypedDict):
+    """Fields always present on a BffPump, even for a never-uploaded pump
+    (verified against a real captured GET api/reports/bff/pumper/{pumperId}
+    response).
 
     `assignmentId` is the pump's UUID device id used as the path segment for
     the pump-logs endpoint (replaces the old numeric tconnectDeviceId).
-    Several fields (settings, *Date*, lastUploadClientType, glucoseUnit,
-    availableDataRange.start/end) are null or absent for never-uploaded or
-    retired pumps, hence total=False.
     """
-    algorithm: str
-    availableDataRange: AvailableDataRange
     assignmentId: str
+    serialNumber: str
+    modelNumber: str
+    modelName: str
+    softwareVersion: str
+
+
+class BffPump(BffPumpRequired, total=False):
+    """One element of BffPumper.pumps, from GET api/reports/bff/pumper/{pumperId}.
+
+    Extends BffPumpRequired with fields that are null or absent for
+    never-uploaded or retired pumps (settings, *Date*, lastUploadClientType,
+    glucoseUnit, availableDataRange.start/end), hence total=False. `algorithm`
+    is optional in the canonical BFF source (PumpAlgorithm | undefined) and so
+    must be accessed defensively.
+    """
+    algorithm: Optional[str]
+    availableDataRange: AvailableDataRange
     glucoseUnit: Optional[str]
     lastUploadDate: Optional[str]
     maxDateOfEvents: Optional[str]
-    modelNumber: str
-    modelName: str
     partNumber: str
-    serialNumber: str
-    softwareVersion: str
     lastUploadClientType: Optional[str]
     settings: Optional[PumpSettingsEnvelope]
 
@@ -122,16 +132,24 @@ class PumpMetadata(TypedDict, total=False):
     replacement for the old reportsfacade pump-event-metadata shape.
 
     deviceId is the UUID assignmentId used as the pump-logs path segment (it
-    replaces the old numeric tconnectDeviceId). date fields are ISO-8601
-    strings or None; settings is the pump settings blob (BffPump.settings
-    .details) or None for a pump that has never uploaded.
+    replaces the old numeric tconnectDeviceId). settings is the pump settings
+    blob (BffPump.settings.details) or None for a pump that has never uploaded.
+
+    Date fields are ISO-8601 strings or None. maxDateWithEvents and
+    minDateWithEvents are normalized to true UTC here (previously they were the
+    pump-local naive wall-clock strings carried verbatim from BffPump's
+    maxDateOfEvents / availableDataRange.start): the BFF sends those two fields
+    without a tz, so they are interpreted in the configured TIMEZONE_NAME and
+    converted to UTC so consumers can compare them against arrow.utcnow() /
+    time.time(). (BffPump.lastUploadDate, by contrast, already carries a 'Z'
+    and is true UTC.)
     """
     deviceId: str
     serialNumber: str
     modelNumber: str
     modelName: str
     softwareVersion: str
-    algorithm: str
+    algorithm: Optional[str]
     maxDateWithEvents: Optional[str]
     minDateWithEvents: Optional[str]
     settings: Optional[dict]
@@ -577,8 +595,44 @@ class TandemSourceApi:
         return self.get('api/reports/bff/pumper/%s' % (self.pumperId), {})
 
     @staticmethod
+    def _naive_local_to_utc(value: Optional[str]) -> Optional[str]:
+        """Normalize a BFF pump-local naive wall-clock timestamp to a true UTC
+        ISO-8601 string.
+
+        The BFF sends maxDateOfEvents / availableDataRange.start with no tz
+        (e.g. "2022-02-16T22:45:58") even though they are the pump's local
+        wall-clock time. Downstream consumers parse them with arrow.get(...),
+        which assumes UTC, and compare against arrow.utcnow() / time.time()
+        (real UTC), so we shift them here by interpreting the naive value in the
+        configured TIMEZONE_NAME and converting to UTC. Values that already
+        carry a tz (defensive; not seen for these two fields) are passed
+        through unchanged so we never double-shift. None passes through as None
+        (never-uploaded pumps).
+        """
+        if not value:
+            return value
+        # If the string already carries a tz (a trailing 'Z' or a +HH:MM /
+        # -HH:MM offset after the time portion), trust it and never double-shift.
+        # Otherwise it's a naive pump-local wall-clock value: interpret it in the
+        # configured TIMEZONE_NAME. (Per the BFF data these two fields are always
+        # naive; the has-tz branch is purely defensive.)
+        time_part = value.split('T', 1)[-1]
+        has_tz = value.endswith('Z') or '+' in time_part or '-' in time_part
+        if has_tz:
+            parsed = arrow.get(value)
+        else:
+            parsed = arrow.get(value, tzinfo=TIMEZONE_NAME)
+        return parsed.to('UTC').isoformat()
+
+    @staticmethod
     def _bff_pump_to_metadata(pump: BffPump) -> PumpMetadata:
-        """Adapt one BffPump into the normalized PumpMetadata shape."""
+        """Adapt one BffPump into the normalized PumpMetadata shape.
+
+        maxDateOfEvents and availableDataRange.start are pump-local naive
+        wall-clock strings; we normalize them to true UTC (via
+        _naive_local_to_utc) so consumers that compare against arrow.utcnow() /
+        time.time() are correct.
+        """
         settings = pump.get('settings')
         data_range = pump.get('availableDataRange') or {}
         meta: PumpMetadata = {
@@ -587,9 +641,9 @@ class TandemSourceApi:
             'modelNumber': pump['modelNumber'],
             'modelName': pump['modelName'],
             'softwareVersion': pump['softwareVersion'],
-            'algorithm': pump['algorithm'],
-            'maxDateWithEvents': pump.get('maxDateOfEvents'),
-            'minDateWithEvents': data_range.get('start'),
+            'algorithm': pump.get('algorithm'),
+            'maxDateWithEvents': TandemSourceApi._naive_local_to_utc(pump.get('maxDateOfEvents')),
+            'minDateWithEvents': TandemSourceApi._naive_local_to_utc(data_range.get('start')),
             'settings': settings['details'] if settings else None,
         }
         return meta

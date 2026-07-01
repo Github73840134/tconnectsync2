@@ -77,10 +77,12 @@ class TestPumpMetadataAdapter(unittest.TestCase):
         self.assertEqual(meta["modelNumber"], "1000354")
         self.assertEqual(meta["softwareVersion"], "7.8.0.0")
         self.assertEqual(meta["algorithm"], "Control-IQ")
-        # maxDateOfEvents -> maxDateWithEvents
-        self.assertEqual(meta["maxDateWithEvents"], "2022-02-16T22:45:58")
-        # availableDataRange.start -> minDateWithEvents
-        self.assertEqual(meta["minDateWithEvents"], "2021-05-06T12:31:19")
+        # maxDateOfEvents -> maxDateWithEvents, normalized from pump-local naive
+        # (America/New_York, EST/UTC-5 in Feb) to true UTC.
+        self.assertEqual(meta["maxDateWithEvents"], "2022-02-17T03:45:58+00:00")
+        # availableDataRange.start -> minDateWithEvents, normalized from
+        # pump-local naive (America/New_York, EDT/UTC-4 in May) to true UTC.
+        self.assertEqual(meta["minDateWithEvents"], "2021-05-06T16:31:19+00:00")
         # settings.details -> settings
         self.assertEqual(meta["settings"], {"profiles": {"numberOfProfiles": 1}})
 
@@ -128,6 +130,45 @@ class TestPumpMetadataAdapter(unittest.TestCase):
         del pump["serialNumber"]
         with self.assertRaises(KeyError):
             TandemSourceApi._bff_pump_to_metadata(pump)
+
+    def test_other_required_keys_raise_when_absent(self):
+        # The 5 always-present BFF fields are still accessed with required
+        # subscript syntax; absence is a genuine error.
+        for key in ("assignmentId", "modelNumber", "modelName", "softwareVersion"):
+            pump = dict(BFF_PUMPER["pumps"][0])
+            del pump[key]
+            with self.assertRaises(KeyError, msg=key):
+                TandemSourceApi._bff_pump_to_metadata(pump)
+
+    def test_missing_algorithm_maps_to_none(self):
+        # algorithm is optional in the canonical BFF source; its absence must
+        # not raise (previously a KeyError) and should map to None.
+        pump = dict(BFF_PUMPER["pumps"][0])
+        del pump["algorithm"]
+        meta = TandemSourceApi._bff_pump_to_metadata(pump)
+        self.assertIsNone(meta["algorithm"])
+
+    def test_naive_dates_normalized_to_utc(self):
+        # America/New_York is set in tests/conftest.py. Feb -> EST (UTC-5),
+        # May -> EDT (UTC-4).
+        meta = TandemSourceApi._bff_pump_to_metadata(BFF_PUMPER["pumps"][0])
+        self.assertEqual(meta["maxDateWithEvents"], "2022-02-17T03:45:58+00:00")
+        self.assertEqual(meta["minDateWithEvents"], "2021-05-06T16:31:19+00:00")
+
+    def test_naive_local_to_utc_none_passthrough(self):
+        self.assertIsNone(TandemSourceApi._naive_local_to_utc(None))
+
+    def test_naive_local_to_utc_idempotent_no_double_shift(self):
+        # A value that already carries a tz must not be shifted again. Feed the
+        # already-UTC output back in and confirm it is unchanged.
+        first = TandemSourceApi._naive_local_to_utc("2022-02-16T22:45:58")
+        self.assertEqual(first, "2022-02-17T03:45:58+00:00")
+        self.assertEqual(TandemSourceApi._naive_local_to_utc(first), first)
+        # A 'Z'-suffixed (true UTC) value is passed through as UTC unchanged.
+        self.assertEqual(
+            TandemSourceApi._naive_local_to_utc("2022-09-20T05:50:12Z"),
+            "2022-09-20T05:50:12+00:00",
+        )
 
     def test_mobi_controliq_plus_passthrough(self):
         pump = {
