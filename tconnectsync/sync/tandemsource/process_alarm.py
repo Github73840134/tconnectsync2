@@ -50,7 +50,7 @@ class ProcessAlarm:
         return ns_entries
 
     def skip_event(self, event):
-        return event.alarmid in (
+        return event.alarmId in (
             eventtypes.LidAlarmActivated.AlarmidEnum.ResumePumpAlarm,
             eventtypes.LidAlarmActivated.AlarmidEnum.ResumePumpAlarm2
         )
@@ -72,7 +72,7 @@ class ProcessAlarm:
         if type(event) == eventtypes.LidAlarmActivated:
             return NightscoutEntry.alarm(
                 created_at = format_datetime(event.eventTimestamp),
-                reason = "%s" % event.alarmid.name,
+                reason = "%s" % event.alarmId.name,
                 pump_event_id = "%s" % event.seqNum
             )
         elif type(event) == eventtypes.LidMalfunctionActivated:
