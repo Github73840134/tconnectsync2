@@ -38,10 +38,10 @@ class ProcessBolus:
         bolusCompletedEvents = []
         bolusEventsForId = {}
         for event in sorted(events, key=lambda x: x.eventTimestamp):
-            if event.bolusid not in bolusEventsForId.keys():
-                bolusEventsForId[event.bolusid] = {}
+            if event.bolusId not in bolusEventsForId.keys():
+                bolusEventsForId[event.bolusId] = {}
 
-            bolusEventsForId[event.bolusid][type(event)] = event
+            bolusEventsForId[event.bolusId][type(event)] = event
 
             if type(event) == eventtypes.LidBolusCompleted:
                 if last_upload_time and arrow.get(event.eventTimestamp) <= last_upload_time:
@@ -57,7 +57,7 @@ class ProcessBolus:
 
         ns_entries = []
         for bolusCompleted in bolusCompletedEvents:
-            m = bolusEventsForId[bolusCompleted.bolusid]
+            m = bolusEventsForId[bolusCompleted.bolusId]
 
             ns_entries.append(self.bolus_to_nsentry(
                 bolusCompleted,
