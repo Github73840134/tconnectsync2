@@ -1,12 +1,7 @@
 import logging
 import arrow
 
-from typing import Iterable, List, Optional, TYPE_CHECKING
-if TYPE_CHECKING:
-    from ...api import TConnectApi
-    from ...nightscout import NightscoutApi
-    from ...eventparser.raw_event import BaseEvent
-
+from tconnectsync.util.time import format_datetime
 from ...features import DEFAULT_FEATURES
 from ... import features
 from ...eventparser.generic import Events, decode_raw_events, EVENT_LEN
@@ -21,17 +16,17 @@ from ...parser.nightscout import (
 logger = logging.getLogger(__name__)
 
 class ProcessBasalResume:
-    def __init__(self, tconnect: "TConnectApi", nightscout: "NightscoutApi", tconnect_device_id: str, pretend: bool, features: List[str] = DEFAULT_FEATURES) -> None:
+    def __init__(self, tconnect, nightscout, tconnect_device_id, pretend, features=DEFAULT_FEATURES):
         self.tconnect = tconnect
         self.nightscout = nightscout
         self.tconnect_device_id = tconnect_device_id
         self.pretend = pretend
         self.features = features
 
-    def enabled(self) -> bool:
+    def enabled(self):
         return features.PUMP_EVENTS in self.features
 
-    def process(self, events: Iterable, time_start: arrow.Arrow, time_end: arrow.Arrow) -> List[dict]:
+    def process(self, events, time_start, time_end):
         logger.debug("ProcessBasalResume: querying for last uploaded resume-suspension")
         last_upload = self.nightscout.last_uploaded_entry(BASALRESUME_EVENTTYPE, time_start=time_start, time_end=time_end)
         last_upload_time = None
@@ -51,7 +46,7 @@ class ProcessBasalResume:
 
         return ns_entries
 
-    def write(self, ns_entries: List[dict]) -> int:
+    def write(self, ns_entries):
         count = 0
         for entry in ns_entries:
             if self.pretend:
@@ -64,9 +59,9 @@ class ProcessBasalResume:
         return count
 
 
-    def resume_to_nsentry(self, event: "BaseEvent") -> Optional[dict]:
+    def resume_to_nsentry(self, event):
         if type(event) == eventtypes.LidPumpingResumed:
             return NightscoutEntry.basalresume(
-                created_at = event.eventTimestamp.format(),
+                created_at = format_datetime(event.eventTimestamp),
                 pump_event_id = "%s" % event.seqNum
             )
