@@ -1,7 +1,7 @@
-import datetime
 import logging
 import arrow
 
+from tconnectsync.util.time import format_datetime
 from ...secret import IGNORE_ZERO_UNIT_BASAL
 from ...features import DEFAULT_FEATURES
 from ... import features
@@ -15,26 +15,20 @@ from ...parser.nightscout import (
     NightscoutEntry
 )
 
-from typing import Iterable, List, Optional, TYPE_CHECKING
-if TYPE_CHECKING:
-    from ...api import TConnectApi
-    from ...nightscout import NightscoutApi
-    from ...eventparser.raw_event import BaseEvent
-
 logger = logging.getLogger(__name__)
 
 class ProcessBasal:
-    def __init__(self, tconnect: "TConnectApi", nightscout: "NightscoutApi", tconnect_device_id: str, pretend: bool, features: List[str] = DEFAULT_FEATURES) -> None:
+    def __init__(self, tconnect, nightscout, tconnect_device_id, pretend, features=DEFAULT_FEATURES):
         self.tconnect = tconnect
         self.nightscout = nightscout
         self.tconnect_device_id = tconnect_device_id
         self.pretend = pretend
         self.features = features
 
-    def enabled(self) -> bool:
+    def enabled(self):
         return features.BASAL in self.features
 
-    def process(self, events: Iterable, time_start: arrow.Arrow, time_end: arrow.Arrow) -> List[dict]:
+    def process(self, events, time_start, time_end):
         logger.debug("ProcessBasal: querying for last uploaded entry")
         last_upload = self.nightscout.last_uploaded_entry(BASAL_EVENTTYPE, time_start=time_start, time_end=time_end)
         last_upload_time = None
@@ -68,7 +62,7 @@ class ProcessBasal:
 
         return ns_entries
 
-    def write(self, ns_entries: List[dict]) -> int:
+    def write(self, ns_entries):
         count = 0
         for entry in ns_entries:
             if self.pretend:
@@ -81,17 +75,17 @@ class ProcessBasal:
         return count
 
 
-    def basal_to_nsentry(self, start: arrow.Arrow, duration: datetime.timedelta, event: "BaseEvent") -> Optional[dict]:
+    def basal_to_nsentry(self, start, duration, event):
         if type(event) == eventtypes.LidBasalRateChange:
-            value = insulin_float_round(event.commandedBasalRate)
+            value = insulin_float_round(event.commandedbasalrate)
             if IGNORE_ZERO_UNIT_BASAL and value < 0.01:
                 logger.info("Ignoring basal entry with %.2f unit basal because IGNORE_ZERO_UNIT_BASAL=true: %s" % (value, event))
                 return None
             return NightscoutEntry.basal(
                 value = value,
-                duration_mins = duration.total_seconds() / 60,
-                created_at = start.format(),
-                reason = ', '.join(bitmask_to_list(event.changeType)),
+                duration_mins = duration.seconds / 60,
+                created_at = format_datetime(start),
+                reason = ', '.join(bitmask_to_list(event.changetype)),
                 pump_event_id = "%s" % event.seqNum
             )
         if type(event) == eventtypes.LidBasalDelivery:
@@ -101,8 +95,8 @@ class ProcessBasal:
                 return None
             return NightscoutEntry.basal(
                 value = value,
-                duration_mins = duration.total_seconds() / 60,
-                created_at = start.format(),
+                duration_mins = duration.seconds / 60,
+                created_at = format_datetime(start),
                 reason = ', '.join(bitmask_to_list(event.commandedRateSource)),
                 pump_event_id = "%s" % event.seqNum
             )
