@@ -609,7 +609,12 @@ class TandemSourceApi:
         endpoint GET api/reports/bff/pump-logs/{device_id}. device_id is the
         UUID assignmentId (PumpMetadata.deviceId). Returns {events, clockChanges}.
         The server caps the window at ~4 weeks; callers needing a longer range
-        must page by date window (see pump_events)."""
+        must page by date window (see pump_events).
+
+        Note: the server currently ignores eventIds and returns every event in
+        the window regardless of the filter (verified against live accounts), so
+        the effective filtering happens client-side via EventClass dispatch. We
+        still send eventIds to mirror the web app and stay forward-compatible."""
         minDate = parse_ymd_date(min_date)
         maxDate = parse_ymd_date(max_date)
         logger.debug(f'get_pump_logs({device_id}, {minDate}, {maxDate})')

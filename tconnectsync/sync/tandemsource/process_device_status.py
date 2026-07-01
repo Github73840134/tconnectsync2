@@ -64,6 +64,12 @@ class ProcessDeviceStatus:
         return [entry]
 
     def daily_basal_to_nsentry(self, event: "BaseEvent") -> Optional[dict]:
+        # NOTE: the pump-logs endpoint does not emit event 81 (LID_DAILY_BASAL)
+        # for either t:slim X2 or Mobi (verified against live accounts), and no
+        # other returned event carries battery data. DEVICE_STATUS therefore
+        # yields nothing on the new API; this path stays for the binary decoder
+        # and in case the endpoint starts returning event 81.
+        #
         # The battery percent is derived from the msb/lsb raw fields; if the
         # event arrived without them (an event shape we can't yet parse), skip
         # it rather than raise on the arithmetic below.
