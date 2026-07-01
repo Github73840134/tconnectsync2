@@ -59,9 +59,9 @@ class TestLidCartridgeFilled(unittest.TestCase):
             "2026-04-30T10:16:09")
 
     def test_insulinvolume_round_trips(self):
-        self.assertEqual(Event(self.fixtureMin).insulinvolume, 60)
-        self.assertEqual(Event(self.fixtureMid).insulinvolume, 105)
-        self.assertEqual(Event(self.fixtureMax).insulinvolume, 190)
+        self.assertEqual(Event(self.fixtureMin).insulinVolume, 60)
+        self.assertEqual(Event(self.fixtureMid).insulinVolume, 105)
+        self.assertEqual(Event(self.fixtureMax).insulinVolume, 190)
 
     def test_v2volume_round_trips(self):
         for fixture in (self.fixtureMin, self.fixtureMid, self.fixtureMax):
@@ -77,7 +77,7 @@ class TestLidCartridgeFilled(unittest.TestCase):
     def test_todict_reflects_real_values(self):
         d = Event(self.fixtureMax).todict()
         self.assertEqual(d["seqNum"], 463083)
-        self.assertEqual(d["insulinvolume"], 190)
+        self.assertEqual(d["insulinVolume"], 190)
         self.assertEqual(d["v2Volume"], 0)
 
 

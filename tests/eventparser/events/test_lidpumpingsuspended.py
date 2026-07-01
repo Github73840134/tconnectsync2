@@ -56,22 +56,22 @@ class TestLidPumpingSuspended(unittest.TestCase):
 
     def test_plain_fields_round_trip(self):
         ev = Event(self.fixtureA)
-        self.assertEqual(ev.presuspendstate, 106)
-        self.assertEqual(ev.insulinamount, 120)
-        self.assertEqual(ev.rpatimeout, 15)
+        self.assertEqual(ev.preSuspendState, 106)
+        self.assertEqual(ev.insulinAmount, 120)
+        self.assertEqual(ev.rpaTimeout, 15)
 
     def test_suspendreason_resolves_to_enum(self):
         # suspendReason:0 -> UserAborted
         ev = Event(self.fixtureA)
-        self.assertEqual(ev.suspendreasonRaw, 0)
-        self.assertEqual(ev.suspendreason,
+        self.assertEqual(ev.suspendReasonRaw, 0)
+        self.assertEqual(ev.suspendReason,
                          eventtypes.LidPumpingSuspended.SuspendreasonEnum.UserAborted)
 
     def test_second_capture_distinct_insulin_amount(self):
         ev = Event(self.fixtureB)
         self.assertEqual(ev.seqNum, 401271)
-        self.assertEqual(ev.insulinamount, 150)
-        self.assertEqual(ev.suspendreason,
+        self.assertEqual(ev.insulinAmount, 150)
+        self.assertEqual(ev.suspendReason,
                          eventtypes.LidPumpingSuspended.SuspendreasonEnum.UserAborted)
 
     def test_todict_is_json_serializable(self):
@@ -80,8 +80,8 @@ class TestLidPumpingSuspended(unittest.TestCase):
         json.dumps(d)  # must not raise
         self.assertEqual(d["id"], 11)
         self.assertEqual(d["name"], "LID_PUMPING_SUSPENDED")
-        self.assertEqual(d["insulinamount"], 120)
-        self.assertEqual(d["suspendreasonRaw"], 0)
+        self.assertEqual(d["insulinAmount"], 120)
+        self.assertEqual(d["suspendReasonRaw"], 0)
 
 
 if __name__ == "__main__":

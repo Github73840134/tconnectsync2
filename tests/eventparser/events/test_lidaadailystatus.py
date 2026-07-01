@@ -60,15 +60,15 @@ class TestLidAaDailyStatus(unittest.TestCase):
 
     def test_pumpcontrolstate_closed_loop(self):
         ev = Event(self.fixtureClosedLoop)
-        self.assertEqual(ev.pumpcontrolstateRaw, 3)
-        self.assertEqual(ev.pumpcontrolstate,
+        self.assertEqual(ev.pumpControlStateRaw, 3)
+        self.assertEqual(ev.pumpControlState,
                          eventtypes.LidAaDailyStatus.PumpcontrolstateEnum.PcmClosedLoop)
 
     def test_pumpcontrolstate_no_control_zero_value(self):
         # pumpControlState 0 must resolve, not be treated as missing.
         ev = Event(self.fixtureNoControl)
-        self.assertEqual(ev.pumpcontrolstateRaw, 0)
-        self.assertEqual(ev.pumpcontrolstate,
+        self.assertEqual(ev.pumpControlStateRaw, 0)
+        self.assertEqual(ev.pumpControlState,
                          eventtypes.LidAaDailyStatus.PumpcontrolstateEnum.PcmNoControlNoCartridgeInstalled)
 
     def test_usermode_resolves(self):
@@ -79,8 +79,8 @@ class TestLidAaDailyStatus(unittest.TestCase):
 
     def test_sensortype_resolves(self):
         ev = Event(self.fixtureClosedLoop)
-        self.assertEqual(ev.sensortypeRaw, 3)
-        self.assertEqual(ev.sensortype,
+        self.assertEqual(ev.sensorTypeRaw, 3)
+        self.assertEqual(ev.sensorType,
                          eventtypes.LidAaDailyStatus.SensortypeEnum.CgmTypeDexcomG7)
 
     def test_unknown_keys_ignored(self):
@@ -98,9 +98,9 @@ class TestLidAaDailyStatus(unittest.TestCase):
         self.assertEqual(d["id"], 313)
         self.assertEqual(d["name"], "LID_AA_DAILY_STATUS")
         self.assertEqual(d["seqNum"], 393118)
-        self.assertEqual(d["pumpcontrolstateRaw"], 3)
+        self.assertEqual(d["pumpControlStateRaw"], 3)
         self.assertEqual(d["usermodeRaw"], 1)
-        self.assertEqual(d["sensortypeRaw"], 3)
+        self.assertEqual(d["sensorTypeRaw"], 3)
 
 
 if __name__ == "__main__":

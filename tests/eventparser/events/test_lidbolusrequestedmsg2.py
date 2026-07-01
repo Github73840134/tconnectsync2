@@ -72,11 +72,11 @@ class TestLidBolusRequestedMsg2(unittest.TestCase):
 
     def test_plain_fields_round_trip(self):
         ev = Event(self.fixtureBleStandard)
-        self.assertEqual(ev.bolusid, 1423)
-        self.assertEqual(ev.standardpercent, 100)
+        self.assertEqual(ev.bolusId, 1423)
+        self.assertEqual(ev.standardPercent, 100)
         self.assertEqual(ev.duration, 0)
-        self.assertEqual(ev.ISF, 0)
-        self.assertEqual(ev.targetbg, 0)
+        self.assertEqual(ev.isf, 0)
+        self.assertEqual(ev.targetBg, 0)
 
     def test_options_enum_ble_standard(self):
         ev = Event(self.fixtureBleStandard)
@@ -92,26 +92,26 @@ class TestLidBolusRequestedMsg2(unittest.TestCase):
 
     def test_selectediob_enum(self):
         ev = Event(self.fixtureBleStandard)
-        self.assertEqual(ev.selectediobRaw, 1)
-        self.assertEqual(ev.selectediob,
+        self.assertEqual(ev.selectedIobRaw, 1)
+        self.assertEqual(ev.selectedIob,
                          eventtypes.LidBolusRequestedMsg2.SelectediobEnum.SwanIobMeal)
 
     def test_useroverride_enum_no(self):
         ev = Event(self.fixtureBleStandard)
-        self.assertEqual(ev.useroverrideRaw, 0)
-        self.assertEqual(ev.useroverride,
+        self.assertEqual(ev.userOverrideRaw, 0)
+        self.assertEqual(ev.userOverride,
                          eventtypes.LidBolusRequestedMsg2.UseroverrideEnum.No)
 
     def test_useroverride_enum_yes(self):
         ev = Event(self.fixtureUserOverride)
-        self.assertEqual(ev.useroverrideRaw, 1)
-        self.assertEqual(ev.useroverride,
+        self.assertEqual(ev.userOverrideRaw, 1)
+        self.assertEqual(ev.userOverride,
                          eventtypes.LidBolusRequestedMsg2.UseroverrideEnum.Yes)
 
     def test_declinedcorrection_enum(self):
         ev = Event(self.fixtureBleStandard)
-        self.assertEqual(ev.declinedcorrectionRaw, 0)
-        self.assertEqual(ev.declinedcorrection,
+        self.assertEqual(ev.declinedCorrectionRaw, 0)
+        self.assertEqual(ev.declinedCorrection,
                          eventtypes.LidBolusRequestedMsg2.DeclinedcorrectionEnum.No)
 
     def test_todict_is_json_serializable(self):

@@ -82,27 +82,27 @@ class TestLidCgmDataG7(unittest.TestCase):
 
     def test_display_value_and_rssi_round_trip(self):
         ev = Event(self.fixtureRising)
-        self.assertEqual(ev.currentglucosedisplayvalue, 287)
-        self.assertEqual(ev.RSSI, -87)
+        self.assertEqual(ev.currentGlucoseDisplayValue, 287)
+        self.assertEqual(ev.rssi, -87)
 
         low = Event(self.fixtureSpecialLow)
-        self.assertEqual(low.currentglucosedisplayvalue, 31)
-        self.assertEqual(low.RSSI, -55)
+        self.assertEqual(low.currentGlucoseDisplayValue, 31)
+        self.assertEqual(low.rssi, -55)
 
         high = Event(self.fixtureBackfill)
-        self.assertEqual(high.currentglucosedisplayvalue, 380)
-        self.assertEqual(high.RSSI, -83)
+        self.assertEqual(high.currentGlucoseDisplayValue, 380)
+        self.assertEqual(high.rssi, -83)
 
     def test_glucosevaluestatus_enum_resolves(self):
         # 0 -> PreciseValue: the zero value must resolve, not be treated as missing.
         ev = Event(self.fixtureRising)
-        self.assertEqual(ev.glucosevaluestatusRaw, 0)
-        self.assertEqual(ev.glucosevaluestatus,
+        self.assertEqual(ev.glucoseValueStatusRaw, 0)
+        self.assertEqual(ev.glucoseValueStatus,
                          eventtypes.LidCgmDataG7.GlucosevaluestatusEnum.PreciseValue)
         # 2 -> SpecialLow
         low = Event(self.fixtureSpecialLow)
-        self.assertEqual(low.glucosevaluestatusRaw, 2)
-        self.assertEqual(low.glucosevaluestatus,
+        self.assertEqual(low.glucoseValueStatusRaw, 2)
+        self.assertEqual(low.glucoseValueStatus,
                          eventtypes.LidCgmDataG7.GlucosevaluestatusEnum.SpecialLow)
 
     def test_algorithmstate_enum_resolves(self):
@@ -110,8 +110,8 @@ class TestLidCgmDataG7(unittest.TestCase):
         for fx in (self.fixtureRising, self.fixtureFalling,
                    self.fixtureSpecialLow, self.fixtureBackfill):
             ev = Event(fx)
-            self.assertEqual(ev.algorithmstateRaw, 32)
-            self.assertEqual(ev.algorithmstate,
+            self.assertEqual(ev.algorithmStateRaw, 32)
+            self.assertEqual(ev.algorithmState,
                              eventtypes.LidCgmDataG7.AlgorithmstateEnum.ReportablePeriodValidEgv)
 
     def test_cgm_datatype_bitmask_folds_to_raw_int(self):
@@ -154,10 +154,10 @@ class TestLidCgmDataG7(unittest.TestCase):
 
     def test_egv_timestamp_is_raw_seconds(self):
         # egvTimeStamp (camelCase) normalizes onto egvTimestamp, kept as raw seconds int.
-        self.assertEqual(Event(self.fixtureRising).egvTimestamp, 580133707)
-        self.assertEqual(Event(self.fixtureFalling).egvTimestamp, 578964361)
-        self.assertEqual(Event(self.fixtureSpecialLow).egvTimestamp, 579800690)
-        self.assertEqual(Event(self.fixtureBackfill).egvTimestamp, 580602548)
+        self.assertEqual(Event(self.fixtureRising).egvTimeStamp, 580133707)
+        self.assertEqual(Event(self.fixtureFalling).egvTimeStamp, 578964361)
+        self.assertEqual(Event(self.fixtureSpecialLow).egvTimeStamp, 579800690)
+        self.assertEqual(Event(self.fixtureBackfill).egvTimeStamp, 580602548)
 
     def test_todict_json_serializable(self):
         for fx in (self.fixtureRising, self.fixtureFalling,

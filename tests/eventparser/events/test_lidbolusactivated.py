@@ -69,28 +69,28 @@ class TestLidBolusActivated(unittest.TestCase):
 
     def test_bolus_fields_round_trip(self):
         ev = Event(self.fixtureMeal)
-        self.assertEqual(ev.bolusid, 1423)
-        self.assertAlmostEqual(ev.IOB, 1.8189592)
-        self.assertAlmostEqual(ev.bolussize, 8.33)
+        self.assertEqual(ev.bolusId, 1423)
+        self.assertAlmostEqual(ev.iob, 1.8189592)
+        self.assertAlmostEqual(ev.bolusSize, 8.33)
 
     def test_zero_iob_is_preserved(self):
         # iob:0 must not be dropped as missing.
         ev = Event(self.fixtureZeroIob)
-        self.assertEqual(ev.bolusid, 1426)
-        self.assertEqual(ev.IOB, 0)
-        self.assertAlmostEqual(ev.bolussize, 10.96)
+        self.assertEqual(ev.bolusId, 1426)
+        self.assertEqual(ev.iob, 0)
+        self.assertAlmostEqual(ev.bolusSize, 10.96)
 
     def test_small_bolus_round_trips(self):
         ev = Event(self.fixtureSmall)
-        self.assertEqual(ev.bolusid, 1425)
-        self.assertAlmostEqual(ev.IOB, 4.116488)
-        self.assertEqual(ev.bolussize, 2)
+        self.assertEqual(ev.bolusId, 1425)
+        self.assertAlmostEqual(ev.iob, 4.116488)
+        self.assertEqual(ev.bolusSize, 2)
 
     def test_selectediob_resolves_to_enum(self):
         # selectedIob:1 -> Swan IOB Meal
         ev = Event(self.fixtureMeal)
-        self.assertEqual(ev.selectediobRaw, 1)
-        self.assertEqual(ev.selectediob,
+        self.assertEqual(ev.selectedIobRaw, 1)
+        self.assertEqual(ev.selectedIob,
                          eventtypes.LidBolusActivated.SelectediobEnum.SwanIobMeal)
 
     def test_spareA3_is_ignored(self):

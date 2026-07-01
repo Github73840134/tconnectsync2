@@ -48,8 +48,8 @@ def _resolve_glucose_value(display_value, status, *, precise, high, low):
 # to be consistent across sensor types (e.g. G6 names its members differently), so
 # every branch resolves against that sensor's own enum members.
 def determine_glucose_value(event: CgmReadingEvent) -> int:
-    display_value = event.currentglucosedisplayvalue
-    status = event.glucosevaluestatus
+    display_value = event.currentGlucoseDisplayValue
+    status = event.glucoseValueStatus
 
     if isinstance(event, eventtypes.LidCgmDataG7):
         e = eventtypes.LidCgmDataG7.GlucosevaluestatusEnum
@@ -123,7 +123,7 @@ class ProcessCGMReading:
     def timestamp_for(self, event: "BaseEvent") -> arrow.Arrow:
         # For backfills the time the event was added to the pump's event store
         # might not be the time it actually occurred, so we use the egvTimestamp
-        return arrow.get(TANDEM_EPOCH + event.egvTimestamp, tzinfo='UTC').replace(tzinfo=self.timezone)
+        return arrow.get(TANDEM_EPOCH + event.egvTimeStamp, tzinfo='UTC').replace(tzinfo=self.timezone)
 
     def to_nsentry(self, event: "BaseEvent") -> Optional[dict]:
         return NightscoutEntry.entry(

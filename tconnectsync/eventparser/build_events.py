@@ -119,7 +119,12 @@ def eventNameFormat(text):
 def fieldNameFormat(text):
     if not text or all([i.isupper() for i in text]):
         return text
-    return firstLower(text.replace('_', ' ').title().replace(' ', '')).replace('raw', 'Raw')
+    if '_' in text or ' ' in text:
+        # snake_case / space-separated -> CamelCase, then lowercase first char
+        return firstLower(text.replace('_', ' ').title().replace(' ', '')).replace('raw', 'Raw')
+    # already camelCase (schema keys): preserve internal capitalization, only
+    # lowercase the first character (don't .title() it away)
+    return firstLower(text)
 
 
 def build_fields(event_def):

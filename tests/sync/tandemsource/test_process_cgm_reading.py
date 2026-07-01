@@ -39,9 +39,9 @@ class TestProcessCGMReadingG7(unittest.TestCase):
 
         self.assertEqual(type(events[0]), eventtypes.LidCgmDataG7)
         self.assertEqual(events[0].raw.timestampRaw, 566504207)
-        self.assertEqual(events[0].egvTimestamp, 566504204)
+        self.assertEqual(events[0].egvTimeStamp, 566504204)
         self.assertEqual(events[0].seqNum, 505869)
-        self.assertEqual(events[0].currentglucosedisplayvalue, 80)
+        self.assertEqual(events[0].currentGlucoseDisplayValue, 80)
         self.assertEqual(events[0].rateRaw, -9)
 
         p = self.process.process(events, time_start=None, time_end=None)
@@ -63,9 +63,9 @@ class TestProcessCGMReadingG7(unittest.TestCase):
         for event in events:
             self.assertEqual(type(event), eventtypes.LidCgmDataG7)
 
-        self.assertEqual(events[0].currentglucosedisplayvalue, 80)
-        self.assertEqual(events[1].currentglucosedisplayvalue, 71)
-        self.assertEqual(events[2].currentglucosedisplayvalue, 119)
+        self.assertEqual(events[0].currentGlucoseDisplayValue, 80)
+        self.assertEqual(events[1].currentGlucoseDisplayValue, 71)
+        self.assertEqual(events[2].currentGlucoseDisplayValue, 119)
 
         p = self.process.process(events, time_start=None, time_end=None)
 
@@ -139,8 +139,8 @@ class TestProcessCGMReadingG6(unittest.TestCase):
         # timestamp 2022-01-28T00:01:09 confirmed w/ tandem csv export
         self.assertEqual(type(events[0]), eventtypes.LidCgmDataGxb)
         self.assertEqual(events[0].raw.timestampRaw, 444182469)
-        self.assertEqual(events[0].egvTimestamp, 444182469)
-        self.assertEqual(events[0].currentglucosedisplayvalue, 75)
+        self.assertEqual(events[0].egvTimeStamp, 444182469)
+        self.assertEqual(events[0].currentGlucoseDisplayValue, 75)
         self.assertEqual(events[0].rateRaw, -4)
 
         p = self.process.process(events, time_start=None, time_end=None)
@@ -162,9 +162,9 @@ class TestProcessCGMReadingG6(unittest.TestCase):
         for event in events:
             self.assertEqual(type(event), eventtypes.LidCgmDataGxb)
 
-        self.assertEqual(events[0].currentglucosedisplayvalue, 75)
-        self.assertEqual(events[1].currentglucosedisplayvalue, 77)
-        self.assertEqual(events[2].currentglucosedisplayvalue, 76)
+        self.assertEqual(events[0].currentGlucoseDisplayValue, 75)
+        self.assertEqual(events[1].currentGlucoseDisplayValue, 77)
+        self.assertEqual(events[2].currentGlucoseDisplayValue, 76)
 
         p = self.process.process(events, time_start=None, time_end=None)
 
@@ -191,11 +191,11 @@ class TestProcessCGMReadingG6(unittest.TestCase):
         for event in events:
             self.assertEqual(type(event), eventtypes.LidCgmDataGxb)
 
-        self.assertEqual(events[0].currentglucosedisplayvalue, 75)
-        self.assertEqual(events[1].currentglucosedisplayvalue, 77)
-        self.assertEqual(events[2].currentglucosedisplayvalue, 76) # backfill
-        self.assertEqual(events[3].currentglucosedisplayvalue, 75)
-        self.assertEqual(events[4].currentglucosedisplayvalue, 74)
+        self.assertEqual(events[0].currentGlucoseDisplayValue, 75)
+        self.assertEqual(events[1].currentGlucoseDisplayValue, 77)
+        self.assertEqual(events[2].currentGlucoseDisplayValue, 76) # backfill
+        self.assertEqual(events[3].currentGlucoseDisplayValue, 75)
+        self.assertEqual(events[4].currentGlucoseDisplayValue, 74)
 
         self.assertEqual(events[0].raw.timestampRaw, 444182469)
         self.assertEqual(events[1].raw.timestampRaw, 444182768)
@@ -203,11 +203,11 @@ class TestProcessCGMReadingG6(unittest.TestCase):
         self.assertEqual(events[3].raw.timestampRaw, 444189367)
         self.assertEqual(events[4].raw.timestampRaw, 444189666)
 
-        self.assertEqual(events[0].egvTimestamp, 444182469)
-        self.assertEqual(events[1].egvTimestamp, 444182768)
-        self.assertEqual(events[2].egvTimestamp, 444189067)
-        self.assertEqual(events[3].egvTimestamp, 444189367)
-        self.assertEqual(events[4].egvTimestamp, 444189666)
+        self.assertEqual(events[0].egvTimeStamp, 444182469)
+        self.assertEqual(events[1].egvTimeStamp, 444182768)
+        self.assertEqual(events[2].egvTimeStamp, 444189067)
+        self.assertEqual(events[3].egvTimeStamp, 444189367)
+        self.assertEqual(events[4].egvTimeStamp, 444189666)
 
 
         p = self.process.process(events, time_start=None, time_end=None)
@@ -381,7 +381,7 @@ class TestProcessCGMReadingFSL3(unittest.TestCase):
 
         self.assertEqual(type(events[0]), eventtypes.LidCgmDataFsl3)
         self.assertEqual(events[0].seqNum, 785470)
-        self.assertEqual(events[0].currentglucosedisplayvalue, 149)
+        self.assertEqual(events[0].currentGlucoseDisplayValue, 149)
 
         p = self.process.process(events, time_start=None, time_end=None)
 
@@ -400,8 +400,8 @@ class TestProcessCGMReadingFSL3(unittest.TestCase):
         for event in events:
             self.assertEqual(type(event), eventtypes.LidCgmDataFsl3)
 
-        self.assertEqual(events[0].currentglucosedisplayvalue, 149)
-        self.assertEqual(events[1].currentglucosedisplayvalue, 149)
+        self.assertEqual(events[0].currentGlucoseDisplayValue, 149)
+        self.assertEqual(events[1].currentGlucoseDisplayValue, 149)
 
         p = self.process.process(events, time_start=None, time_end=None)
 
@@ -443,7 +443,7 @@ class TestProcessCGMReadingG7Json(unittest.TestCase):
     def test_single_g7_json_reading(self):
         events = list(Events([dict(G7_JSON_1)]))
         self.assertEqual(type(events[0]), eventtypes.LidCgmDataG7)
-        self.assertEqual(events[0].egvTimestamp, 578966461)
+        self.assertEqual(events[0].egvTimeStamp, 578966461)
 
         p = self.process.process(events, time_start=None, time_end=None)
         self.assertEqual(len(p), 1)
@@ -516,7 +516,7 @@ class TestProcessCGMReadingG6Json(unittest.TestCase):
     def test_single_g6_json_reading(self):
         events = list(Events([dict(G6_JSON_1)]))
         self.assertEqual(type(events[0]), eventtypes.LidCgmDataGxb)
-        self.assertEqual(events[0].egvTimestamp, 474023314)
+        self.assertEqual(events[0].egvTimeStamp, 474023314)
 
         p = self.process.process(events, time_start=None, time_end=None)
         self.assertEqual(len(p), 1)

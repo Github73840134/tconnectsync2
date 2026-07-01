@@ -62,21 +62,21 @@ class TestLidDateChanged(unittest.TestCase):
 
     def test_equal_dates_round_trip(self):
         ev = Event(self.fixtureEqual)
-        self.assertEqual(ev.dateprior, 6515)
-        self.assertEqual(ev.dateafter, 6515)
-        self.assertEqual(ev.Rawrtctime, 1625159578)
+        self.assertEqual(ev.datePrior, 6515)
+        self.assertEqual(ev.dateAfter, 6515)
+        self.assertEqual(ev.rawRtcTime, 1625159578)
 
     def test_off_by_one_dates_round_trip(self):
         ev = Event(self.fixtureOffByOne)
-        self.assertEqual(ev.dateprior, 6530)
-        self.assertEqual(ev.dateafter, 6531)
-        self.assertEqual(ev.Rawrtctime, 2958809165)
+        self.assertEqual(ev.datePrior, 6530)
+        self.assertEqual(ev.dateAfter, 6531)
+        self.assertEqual(ev.rawRtcTime, 2958809165)
 
     def test_large_jump_dates_round_trip(self):
         ev = Event(self.fixtureLargeJump)
-        self.assertEqual(ev.dateprior, 4394)
-        self.assertEqual(ev.dateafter, 6410)
-        self.assertEqual(ev.Rawrtctime, 1089120495)
+        self.assertEqual(ev.datePrior, 4394)
+        self.assertEqual(ev.dateAfter, 6410)
+        self.assertEqual(ev.rawRtcTime, 1089120495)
 
     def test_todict_is_json_serializable(self):
         for fx in (self.fixtureEqual, self.fixtureOffByOne, self.fixtureLargeJump):
@@ -86,9 +86,9 @@ class TestLidDateChanged(unittest.TestCase):
             self.assertEqual(d["id"], 14)
             self.assertEqual(d["name"], "LID_DATE_CHANGED")
             self.assertEqual(d["seqNum"], fx["sequenceNumber"])
-            self.assertEqual(d["dateprior"], fx["eventProperties"]["datePrior"])
-            self.assertEqual(d["dateafter"], fx["eventProperties"]["dateAfter"])
-            self.assertEqual(d["Rawrtctime"], fx["eventProperties"]["rawRtcTime"])
+            self.assertEqual(d["datePrior"], fx["eventProperties"]["datePrior"])
+            self.assertEqual(d["dateAfter"], fx["eventProperties"]["dateAfter"])
+            self.assertEqual(d["rawRtcTime"], fx["eventProperties"]["rawRtcTime"])
 
 
 if __name__ == "__main__":

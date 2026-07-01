@@ -87,31 +87,31 @@ class TestLidBolusRequestedMsg3(unittest.TestCase):
 
     def test_food_only(self):
         ev = Event(self.fixtureFoodOnly)
-        self.assertEqual(ev.bolusid, 1423)
-        self.assertAlmostEqual(ev.foodbolussize, 8.33)
-        self.assertAlmostEqual(ev.correctionbolussize, 0)
-        self.assertAlmostEqual(ev.totalbolussize, 8.330001)
+        self.assertEqual(ev.bolusId, 1423)
+        self.assertAlmostEqual(ev.foodBolusSize, 8.33)
+        self.assertAlmostEqual(ev.correctionBolusSize, 0)
+        self.assertAlmostEqual(ev.totalBolusSize, 8.330001)
 
     def test_food_and_correction(self):
         ev = Event(self.fixtureFoodAndCorrection)
-        self.assertEqual(ev.bolusid, 1426)
-        self.assertAlmostEqual(ev.foodbolussize, 10.83)
-        self.assertAlmostEqual(ev.correctionbolussize, 0.13)
-        self.assertAlmostEqual(ev.totalbolussize, 10.96)
+        self.assertEqual(ev.bolusId, 1426)
+        self.assertAlmostEqual(ev.foodBolusSize, 10.83)
+        self.assertAlmostEqual(ev.correctionBolusSize, 0.13)
+        self.assertAlmostEqual(ev.totalBolusSize, 10.96)
 
     def test_correction_only(self):
         ev = Event(self.fixtureCorrectionOnly)
-        self.assertEqual(ev.bolusid, 1430)
-        self.assertAlmostEqual(ev.foodbolussize, 0)
-        self.assertAlmostEqual(ev.correctionbolussize, 1.47)
-        self.assertAlmostEqual(ev.totalbolussize, 3)
+        self.assertEqual(ev.bolusId, 1430)
+        self.assertAlmostEqual(ev.foodBolusSize, 0)
+        self.assertAlmostEqual(ev.correctionBolusSize, 1.47)
+        self.assertAlmostEqual(ev.totalBolusSize, 3)
 
     def test_total_only(self):
         ev = Event(self.fixtureTotalOnly)
-        self.assertEqual(ev.bolusid, 1424)
-        self.assertAlmostEqual(ev.foodbolussize, 0)
-        self.assertAlmostEqual(ev.correctionbolussize, 0)
-        self.assertAlmostEqual(ev.totalbolussize, 4)
+        self.assertEqual(ev.bolusId, 1424)
+        self.assertAlmostEqual(ev.foodBolusSize, 0)
+        self.assertAlmostEqual(ev.correctionBolusSize, 0)
+        self.assertAlmostEqual(ev.totalBolusSize, 4)
 
     def test_todict_json_serializable(self):
         for fixture in (self.fixtureFoodOnly, self.fixtureFoodAndCorrection,

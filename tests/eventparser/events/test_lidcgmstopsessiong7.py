@@ -73,26 +73,26 @@ class TestLidCgmStopSessionG7(unittest.TestCase):
 
     def test_session_time_fields_round_trip(self):
         ev = Event(self.fixtureReason5)
-        self.assertEqual(ev.currenttransmittertime, 890598)
-        self.assertEqual(ev.sessionstarttime, 73)
-        self.assertEqual(ev.sessionstoptime, 890591)
-        self.assertEqual(ev.sessionduration, 10)
-        self.assertEqual(ev.stopsessioncode, 1)
+        self.assertEqual(ev.currentTransmitterTime, 890598)
+        self.assertEqual(ev.sessionStartTime, 73)
+        self.assertEqual(ev.sessionStopTime, 890591)
+        self.assertEqual(ev.sessionDuration, 10)
+        self.assertEqual(ev.stopSessionCode, 1)
 
     def test_session_start_time_sentinel_round_trips(self):
         # UINT32-max sentinel must survive as-is.
         ev = Event(self.fixtureReason15)
-        self.assertEqual(ev.sessionstarttime, 4294967295)
-        self.assertEqual(ev.sessionstoptime, 0)
-        self.assertEqual(ev.stopsessioncode, 0)
+        self.assertEqual(ev.sessionStartTime, 4294967295)
+        self.assertEqual(ev.sessionStopTime, 0)
+        self.assertEqual(ev.stopSessionCode, 0)
 
     def test_session_stop_reason_is_raw_int(self):
         # No enum is generated for sessionStopReason; it stays the captured int.
         self.assertFalse(hasattr(eventtypes.LidCgmStopSessionG7,
                                  "SessionstopreasonEnum"))
-        self.assertEqual(Event(self.fixtureReason5).sessionstopreason, 5)
-        self.assertEqual(Event(self.fixtureReason16).sessionstopreason, 16)
-        self.assertEqual(Event(self.fixtureReason15).sessionstopreason, 15)
+        self.assertEqual(Event(self.fixtureReason5).sessionStopReason, 5)
+        self.assertEqual(Event(self.fixtureReason16).sessionStopReason, 16)
+        self.assertEqual(Event(self.fixtureReason15).sessionStopReason, 15)
 
     def test_todict_is_json_serializable(self):
         for fixture in (self.fixtureReason5, self.fixtureReason16,
@@ -102,7 +102,7 @@ class TestLidCgmStopSessionG7(unittest.TestCase):
             self.assertEqual(d["id"], 447)
             self.assertEqual(d["name"], "LID_CGM_STOP_SESSION_G7")
             self.assertEqual(
-                d["sessionstopreason"],
+                d["sessionStopReason"],
                 fixture["eventProperties"]["sessionStopReason"])
 
 

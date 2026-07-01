@@ -58,29 +58,29 @@ class TestLidCgmAlertAckDex(unittest.TestCase):
 
     def test_dalertid_resolves_cgm_high(self):
         ev = Event(self.fixtureCgmHigh)
-        self.assertEqual(ev.dalertidRaw, 2)
-        self.assertEqual(ev.dalertid, eventtypes.LidCgmAlertAckDex.DalertidEnum.CgmHigh)
+        self.assertEqual(ev.dalertIdRaw, 2)
+        self.assertEqual(ev.dalertId, eventtypes.LidCgmAlertAckDex.DalertidEnum.CgmHigh)
 
     def test_dalertid_resolves_sensor_expiring_soon(self):
         ev = Event(self.fixtureSensorExpiringSoon)
-        self.assertEqual(ev.dalertidRaw, 12)
-        self.assertEqual(ev.dalertid, eventtypes.LidCgmAlertAckDex.DalertidEnum.CgmSensorExpiringSoon)
+        self.assertEqual(ev.dalertIdRaw, 12)
+        self.assertEqual(ev.dalertId, eventtypes.LidCgmAlertAckDex.DalertidEnum.CgmSensorExpiringSoon)
 
     def test_sensortype_resolves_g7(self):
         for fx in (self.fixtureCgmHigh, self.fixtureSensorExpiringSoon, self.fixtureAckBySoftware):
             ev = Event(fx)
-            self.assertEqual(ev.sensortypeRaw, 3)
-            self.assertEqual(ev.sensortype, eventtypes.LidCgmAlertAckDex.SensortypeEnum.CgmTypeDexcomG7)
+            self.assertEqual(ev.sensorTypeRaw, 3)
+            self.assertEqual(ev.sensorType, eventtypes.LidCgmAlertAckDex.SensortypeEnum.CgmTypeDexcomG7)
 
     def test_acksource_resolves_by_user(self):
         ev = Event(self.fixtureCgmHigh)
-        self.assertEqual(ev.acksourceRaw, 0)
-        self.assertEqual(ev.acksource, eventtypes.LidCgmAlertAckDex.AcksourceEnum.AlertAcknowledgedByUser)
+        self.assertEqual(ev.ackSourceRaw, 0)
+        self.assertEqual(ev.ackSource, eventtypes.LidCgmAlertAckDex.AcksourceEnum.AlertAcknowledgedByUser)
 
     def test_acksource_resolves_by_software(self):
         ev = Event(self.fixtureAckBySoftware)
-        self.assertEqual(ev.acksourceRaw, 1)
-        self.assertEqual(ev.acksource, eventtypes.LidCgmAlertAckDex.AcksourceEnum.AlertAcknowledgedBySoftware)
+        self.assertEqual(ev.ackSourceRaw, 1)
+        self.assertEqual(ev.ackSource, eventtypes.LidCgmAlertAckDex.AcksourceEnum.AlertAcknowledgedBySoftware)
 
     def test_todict_is_json_serializable(self):
         for fx in (self.fixtureCgmHigh, self.fixtureSensorExpiringSoon, self.fixtureAckBySoftware):

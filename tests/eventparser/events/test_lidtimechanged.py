@@ -67,22 +67,22 @@ class TestLidTimeChanged(unittest.TestCase):
 
     def test_time_fields_round_trip(self):
         ev = Event(self.fixtureForward)
-        self.assertEqual(ev.timeprior, 12513657)
-        self.assertEqual(ev.timeafter, 37691000)
-        self.assertEqual(ev.Rawrtctime, 1380540797)
+        self.assertEqual(ev.timePrior, 12513657)
+        self.assertEqual(ev.timeAfter, 37691000)
+        self.assertEqual(ev.rawRtcTime, 1380540797)
 
         ev = Event(self.fixtureBackward)
-        self.assertEqual(ev.timeprior, 59278139)
-        self.assertEqual(ev.timeafter, 55657000)
-        self.assertEqual(ev.Rawrtctime, 1625159580)
+        self.assertEqual(ev.timePrior, 59278139)
+        self.assertEqual(ev.timeAfter, 55657000)
+        self.assertEqual(ev.rawRtcTime, 1625159580)
 
     def test_forward_and_backward_direction(self):
         # timeAfter > timePrior means the clock jumped forward, and vice versa.
         fwd = Event(self.fixtureForward)
-        self.assertGreater(fwd.timeafter, fwd.timeprior)
+        self.assertGreater(fwd.timeAfter, fwd.timePrior)
 
         bwd = Event(self.fixtureBackward)
-        self.assertLess(bwd.timeafter, bwd.timeprior)
+        self.assertLess(bwd.timeAfter, bwd.timePrior)
 
     def test_todict_is_json_serializable(self):
         for fixture in (self.fixtureForward, self.fixtureBackward):
@@ -91,9 +91,9 @@ class TestLidTimeChanged(unittest.TestCase):
             json.dumps(d)  # must not raise
             self.assertEqual(d["id"], 13)
             self.assertEqual(d["name"], "LID_TIME_CHANGED")
-            self.assertEqual(d["timeprior"], fixture["eventProperties"]["timePrior"])
-            self.assertEqual(d["timeafter"], fixture["eventProperties"]["timeAfter"])
-            self.assertEqual(d["Rawrtctime"], fixture["eventProperties"]["rawRtcTime"])
+            self.assertEqual(d["timePrior"], fixture["eventProperties"]["timePrior"])
+            self.assertEqual(d["timeAfter"], fixture["eventProperties"]["timeAfter"])
+            self.assertEqual(d["rawRtcTime"], fixture["eventProperties"]["rawRtcTime"])
 
 
 if __name__ == "__main__":

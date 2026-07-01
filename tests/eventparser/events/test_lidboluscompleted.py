@@ -55,29 +55,29 @@ class TestLidBolusCompleted(unittest.TestCase):
 
     def test_completed_fields_round_trip(self):
         ev = Event(self.fixtureCompleted)
-        self.assertEqual(ev.bolusid, 1423)
-        self.assertAlmostEqual(ev.insulindelivered, 8.33)
-        self.assertAlmostEqual(ev.insulinrequested, 8.33)
-        self.assertAlmostEqual(ev.IOB, 10.088287)
+        self.assertEqual(ev.bolusId, 1423)
+        self.assertAlmostEqual(ev.insulinDelivered, 8.33)
+        self.assertAlmostEqual(ev.insulinRequested, 8.33)
+        self.assertAlmostEqual(ev.iob, 10.088287)
 
     def test_interrupted_fields_round_trip(self):
         ev = Event(self.fixtureInterrupted)
-        self.assertEqual(ev.bolusid, 1644)
-        self.assertAlmostEqual(ev.insulindelivered, 0.04657)
-        self.assertAlmostEqual(ev.insulinrequested, 0.5)
-        self.assertAlmostEqual(ev.IOB, 1.2275107)
+        self.assertEqual(ev.bolusId, 1644)
+        self.assertAlmostEqual(ev.insulinDelivered, 0.04657)
+        self.assertAlmostEqual(ev.insulinRequested, 0.5)
+        self.assertAlmostEqual(ev.iob, 1.2275107)
         # Interrupted: less insulin delivered than requested.
-        self.assertLess(ev.insulindelivered, ev.insulinrequested)
+        self.assertLess(ev.insulinDelivered, ev.insulinRequested)
 
     def test_completionstatus_resolves_to_enum(self):
         completed = Event(self.fixtureCompleted)
-        self.assertEqual(completed.completionstatusRaw, 3)
-        self.assertEqual(completed.completionstatus,
+        self.assertEqual(completed.completionStatusRaw, 3)
+        self.assertEqual(completed.completionStatus,
                          eventtypes.LidBolusCompleted.CompletionstatusEnum.Completed)
 
         interrupted = Event(self.fixtureInterrupted)
-        self.assertEqual(interrupted.completionstatusRaw, 0)
-        self.assertEqual(interrupted.completionstatus,
+        self.assertEqual(interrupted.completionStatusRaw, 0)
+        self.assertEqual(interrupted.completionStatus,
                          eventtypes.LidBolusCompleted.CompletionstatusEnum.UserAborted)
 
     def test_todict_is_json_serializable(self):

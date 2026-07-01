@@ -58,7 +58,7 @@ class TestLidTubingFilled(unittest.TestCase):
     def test_negative_primesize_sentinel_round_trips(self):
         # -1 is a sentinel and must survive verbatim (not treated as missing).
         ev = Event(self.fixtureNegativePrimeSize)
-        self.assertEqual(ev.primesize, -1)
+        self.assertEqual(ev.primeSize, -1)
 
     def test_position_round_trips(self):
         ev = Event(self.fixtureNegativePrimeSize)
@@ -66,16 +66,16 @@ class TestLidTubingFilled(unittest.TestCase):
 
     def test_completionstatus_resolves_to_completed(self):
         ev = Event(self.fixtureNegativePrimeSize)
-        self.assertEqual(ev.completionstatusRaw, 3)
-        self.assertEqual(ev.completionstatus,
+        self.assertEqual(ev.completionStatusRaw, 3)
+        self.assertEqual(ev.completionStatus,
                          eventtypes.LidTubingFilled.CompletionstatusEnum.Completed)
 
     def test_second_capture_distinct_values(self):
         ev = Event(self.fixtureCompleted)
         self.assertEqual(ev.seqNum, 401423)
         self.assertEqual(ev.position, 594056)
-        self.assertEqual(ev.primesize, -1)
-        self.assertEqual(ev.completionstatus,
+        self.assertEqual(ev.primeSize, -1)
+        self.assertEqual(ev.completionStatus,
                          eventtypes.LidTubingFilled.CompletionstatusEnum.Completed)
         self.assertEqual(ev.eventTimestamp.format('YYYY-MM-DDTHH:mm:ss'),
                          "2026-05-02T12:27:17")
@@ -87,8 +87,8 @@ class TestLidTubingFilled(unittest.TestCase):
         self.assertEqual(td["id"], 63)
         self.assertEqual(td["name"], "LID_TUBING_FILLED")
         self.assertEqual(td["seqNum"], 394428)
-        self.assertEqual(td["primesize"], -1)
-        self.assertEqual(td["completionstatusRaw"], 3)
+        self.assertEqual(td["primeSize"], -1)
+        self.assertEqual(td["completionStatusRaw"], 3)
         self.assertEqual(td["position"], 631224)
 
 

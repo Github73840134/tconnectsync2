@@ -58,51 +58,51 @@ class TestLidBgReadingTaken(unittest.TestCase):
 
     def test_bg_iob_targetbg_isf_round_trip(self):
         ev = Event(self.fixtureManualEntry)
-        self.assertEqual(ev.BG, 151)
-        self.assertAlmostEqual(ev.IOB, 1.1809407)
-        self.assertEqual(ev.targetbg, 110)
-        self.assertEqual(ev.ISF, 30)
+        self.assertEqual(ev.bg, 151)
+        self.assertAlmostEqual(ev.iob, 1.1809407)
+        self.assertEqual(ev.targetBg, 110)
+        self.assertEqual(ev.isf, 30)
 
         ev2 = Event(self.fixtureAutoPopulated)
-        self.assertEqual(ev2.BG, 164)
-        self.assertAlmostEqual(ev2.IOB, 1.8189592)
-        self.assertEqual(ev2.targetbg, 110)
-        self.assertEqual(ev2.ISF, 30)
+        self.assertEqual(ev2.bg, 164)
+        self.assertAlmostEqual(ev2.iob, 1.8189592)
+        self.assertEqual(ev2.targetBg, 110)
+        self.assertEqual(ev2.isf, 30)
 
     def test_selectediob_enum_resolves(self):
         # selectedIob:1 -> SwanIobMeal
         ev = Event(self.fixtureManualEntry)
-        self.assertEqual(ev.selectediobRaw, 1)
-        self.assertEqual(ev.selectediob,
+        self.assertEqual(ev.selectedIobRaw, 1)
+        self.assertEqual(ev.selectedIob,
                          eventtypes.LidBgReadingTaken.SelectediobEnum.SwanIobMeal)
 
     def test_bgentrytype_enum_resolves(self):
         # bgEntryType:0 -> ManualEntryByTheUserViaNumpad (0 not treated as missing)
         ev = Event(self.fixtureManualEntry)
-        self.assertEqual(ev.bgentrytypeRaw, 0)
+        self.assertEqual(ev.bgEntryTypeRaw, 0)
         self.assertEqual(
-            ev.bgentrytype,
+            ev.bgEntryType,
             eventtypes.LidBgReadingTaken.BgentrytypeEnum.ManualEntryByTheUserViaNumpad)
 
         # bgEntryType:1 -> AutoPopulatedBgUsingDexcomEgv
         ev2 = Event(self.fixtureAutoPopulated)
-        self.assertEqual(ev2.bgentrytypeRaw, 1)
+        self.assertEqual(ev2.bgEntryTypeRaw, 1)
         self.assertEqual(
-            ev2.bgentrytype,
+            ev2.bgEntryType,
             eventtypes.LidBgReadingTaken.BgentrytypeEnum.AutoPopulatedBgUsingDexcomEgv)
 
     def test_bgsourcetype_enum_resolves(self):
         # bgSourceType:1 -> RemoteEntry
         ev = Event(self.fixtureManualEntry)
-        self.assertEqual(ev.bgsourcetypeRaw, 1)
-        self.assertEqual(ev.bgsourcetype,
+        self.assertEqual(ev.bgSourceTypeRaw, 1)
+        self.assertEqual(ev.bgSourceType,
                          eventtypes.LidBgReadingTaken.BgsourcetypeEnum.RemoteEntry)
 
     def test_cgmcalibration_enum_resolves(self):
         # cgmCalibration:0 -> No (0 not treated as missing)
         ev = Event(self.fixtureManualEntry)
-        self.assertEqual(ev.cgmcalibrationRaw, 0)
-        self.assertEqual(ev.cgmcalibration,
+        self.assertEqual(ev.cgmCalibrationRaw, 0)
+        self.assertEqual(ev.cgmCalibration,
                          eventtypes.LidBgReadingTaken.CgmcalibrationEnum.No)
 
     def test_todict_is_json_serializable(self):

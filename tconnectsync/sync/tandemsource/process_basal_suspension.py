@@ -68,6 +68,6 @@ class ProcessBasalSuspension:
         if type(event) == eventtypes.LidPumpingSuspended:
             return NightscoutEntry.basalsuspension(
                 created_at = event.eventTimestamp.format(),
-                reason = ', '.join(bitmask_to_list(event.suspendreason)),
+                reason = ', '.join(bitmask_to_list(event.suspendReason)),
                 pump_event_id = "%s" % event.seqNum
             )

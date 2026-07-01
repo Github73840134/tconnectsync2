@@ -28,9 +28,9 @@ class TestProcessUserModeSleep(unittest.TestCase):
         ]
 
         self.assertEqual(type(events[0]), eventtypes.LidAaUserModeChange)
-        self.assertEqual(events[0].previoususermode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Normal)
-        self.assertEqual(events[0].currentusermode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Sleeping)
-        self.assertEqual(events[0].requestedaction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StartSleep)
+        self.assertEqual(events[0].previousUserMode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Normal)
+        self.assertEqual(events[0].currentUserMode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Sleeping)
+        self.assertEqual(events[0].requestedAction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StartSleep)
 
         time_end = arrow.get('2024-12-04T23:00:30-05:00')
         p = self.process.process(events, time_start=None, time_end=time_end)
@@ -56,9 +56,9 @@ class TestProcessUserModeSleep(unittest.TestCase):
         ]
 
         self.assertEqual(type(events[0]), eventtypes.LidAaUserModeChange)
-        self.assertEqual(events[0].previoususermode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Sleeping)
-        self.assertEqual(events[0].currentusermode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Normal)
-        self.assertEqual(events[0].requestedaction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StopSleep)
+        self.assertEqual(events[0].previousUserMode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Sleeping)
+        self.assertEqual(events[0].currentUserMode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Normal)
+        self.assertEqual(events[0].requestedAction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StopSleep)
 
         time_end = arrow.get('2024-12-04T23:00:30-05:00')
         p = self.process.process(events, time_start=None, time_end=time_end)
@@ -78,15 +78,15 @@ class TestProcessUserModeSleep(unittest.TestCase):
         ]
 
         self.assertEqual(type(events[0]), eventtypes.LidAaUserModeChange)
-        self.assertEqual(events[0].previoususermode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Normal)
-        self.assertEqual(events[0].currentusermode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Sleeping)
-        self.assertEqual(events[0].requestedaction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StartSleep)
+        self.assertEqual(events[0].previousUserMode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Normal)
+        self.assertEqual(events[0].currentUserMode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Sleeping)
+        self.assertEqual(events[0].requestedAction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StartSleep)
 
 
         self.assertEqual(type(events[1]), eventtypes.LidAaUserModeChange)
-        self.assertEqual(events[1].previoususermode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Sleeping)
-        self.assertEqual(events[1].currentusermode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Normal)
-        self.assertEqual(events[1].requestedaction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StopSleep)
+        self.assertEqual(events[1].previousUserMode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Sleeping)
+        self.assertEqual(events[1].currentUserMode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Normal)
+        self.assertEqual(events[1].requestedAction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StopSleep)
 
         time_end = arrow.get('2024-12-05T10:00:00-05:00')
         p = self.process.process(events, time_start=None, time_end=time_end)
@@ -123,9 +123,9 @@ class TestProcessUserModeSleep(unittest.TestCase):
         ]
 
         self.assertEqual(type(events[0]), eventtypes.LidAaUserModeChange)
-        self.assertEqual(events[0].previoususermode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Sleeping)
-        self.assertEqual(events[0].currentusermode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Normal)
-        self.assertEqual(events[0].requestedaction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StopSleep)
+        self.assertEqual(events[0].previousUserMode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Sleeping)
+        self.assertEqual(events[0].currentUserMode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Normal)
+        self.assertEqual(events[0].requestedAction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StopSleep)
 
         time_end = arrow.get('2024-12-05T10:00:00-05:00')
         p = self.process.process(events, time_start=None, time_end=time_end)
@@ -161,9 +161,9 @@ class TestProcessUserModeExercise(unittest.TestCase):
         ]
 
         self.assertEqual(type(events[0]), eventtypes.LidAaUserModeChange)
-        self.assertEqual(events[0].previoususermode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Normal)
-        self.assertEqual(events[0].currentusermode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Exercising)
-        self.assertEqual(events[0].requestedaction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StartExercise)
+        self.assertEqual(events[0].previousUserMode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Normal)
+        self.assertEqual(events[0].currentUserMode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Exercising)
+        self.assertEqual(events[0].requestedAction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StartExercise)
 
         time_end = arrow.get('2024-12-04T23:00:30-05:00')
         p = self.process.process(events, time_start=None, time_end=time_end)
@@ -189,9 +189,9 @@ class TestProcessUserModeExercise(unittest.TestCase):
         ]
 
         self.assertEqual(type(events[0]), eventtypes.LidAaUserModeChange)
-        self.assertEqual(events[0].previoususermode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Exercising)
-        self.assertEqual(events[0].currentusermode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Normal)
-        self.assertEqual(events[0].requestedaction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StopExercise)
+        self.assertEqual(events[0].previousUserMode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Exercising)
+        self.assertEqual(events[0].currentUserMode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Normal)
+        self.assertEqual(events[0].requestedAction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StopExercise)
 
         time_end = arrow.get('2024-12-04T23:00:30-05:00')
         p = self.process.process(events, time_start=None, time_end=time_end)
@@ -211,15 +211,15 @@ class TestProcessUserModeExercise(unittest.TestCase):
         ]
 
         self.assertEqual(type(events[0]), eventtypes.LidAaUserModeChange)
-        self.assertEqual(events[0].previoususermode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Normal)
-        self.assertEqual(events[0].currentusermode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Exercising)
-        self.assertEqual(events[0].requestedaction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StartExercise)
+        self.assertEqual(events[0].previousUserMode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Normal)
+        self.assertEqual(events[0].currentUserMode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Exercising)
+        self.assertEqual(events[0].requestedAction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StartExercise)
 
 
         self.assertEqual(type(events[1]), eventtypes.LidAaUserModeChange)
-        self.assertEqual(events[1].previoususermode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Exercising)
-        self.assertEqual(events[1].currentusermode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Normal)
-        self.assertEqual(events[1].requestedaction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StopExercise)
+        self.assertEqual(events[1].previousUserMode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Exercising)
+        self.assertEqual(events[1].currentUserMode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Normal)
+        self.assertEqual(events[1].requestedAction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StopExercise)
 
         time_end = arrow.get('2024-12-05T10:00:00-05:00')
         p = self.process.process(events, time_start=None, time_end=time_end)
@@ -256,9 +256,9 @@ class TestProcessUserModeExercise(unittest.TestCase):
         ]
 
         self.assertEqual(type(events[0]), eventtypes.LidAaUserModeChange)
-        self.assertEqual(events[0].previoususermode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Exercising)
-        self.assertEqual(events[0].currentusermode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Normal)
-        self.assertEqual(events[0].requestedaction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StopExercise)
+        self.assertEqual(events[0].previousUserMode, eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Exercising)
+        self.assertEqual(events[0].currentUserMode, eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Normal)
+        self.assertEqual(events[0].requestedAction, eventtypes.LidAaUserModeChange.RequestedactionEnum.StopExercise)
 
         time_end = arrow.get('2024-12-05T10:00:00-05:00')
         p = self.process.process(events, time_start=None, time_end=time_end)

@@ -28,7 +28,7 @@ class TestProcessAlarm(unittest.TestCase):
         ]
 
         self.assertEqual(type(events[0]), eventtypes.LidAlarmActivated)
-        self.assertEqual(events[0].alarmid, eventtypes.LidAlarmActivated.AlarmidEnum.ResumePumpAlarm)
+        self.assertEqual(events[0].alarmId, eventtypes.LidAlarmActivated.AlarmidEnum.ResumePumpAlarm)
 
         p = self.process.process(events, time_start=None, time_end=None)
 
@@ -44,7 +44,7 @@ class TestProcessAlarm(unittest.TestCase):
         ]
 
         self.assertEqual(type(events[0]), eventtypes.LidAlarmActivated)
-        self.assertEqual(events[0].alarmid, eventtypes.LidAlarmActivated.AlarmidEnum.EmptyCartridgeAlarm)
+        self.assertEqual(events[0].alarmId, eventtypes.LidAlarmActivated.AlarmidEnum.EmptyCartridgeAlarm)
 
         p = self.process.process(events, time_start=None, time_end=None)
 

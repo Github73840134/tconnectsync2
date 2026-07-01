@@ -75,27 +75,27 @@ class TestLidAlertCleared(unittest.TestCase):
 
     def test_plain_field_round_trips(self):
         ev = Event(self.fixtureControlIqLow)
-        self.assertEqual(ev.faultlocatordata, 0)
+        self.assertEqual(ev.faultLocatorData, 0)
 
     def test_alertid_raw_round_trips(self):
-        self.assertEqual(Event(self.fixtureLowInsulin).alertidRaw, 0)
-        self.assertEqual(Event(self.fixtureLowPower).alertidRaw, 2)
-        self.assertEqual(Event(self.fixtureIncompleteFillTubing).alertidRaw, 14)
-        self.assertEqual(Event(self.fixtureControlIqLow).alertidRaw, 51)
+        self.assertEqual(Event(self.fixtureLowInsulin).alertIdRaw, 0)
+        self.assertEqual(Event(self.fixtureLowPower).alertIdRaw, 2)
+        self.assertEqual(Event(self.fixtureIncompleteFillTubing).alertIdRaw, 14)
+        self.assertEqual(Event(self.fixtureControlIqLow).alertIdRaw, 51)
 
     def test_alertid_resolves_to_enum(self):
         E = eventtypes.LidAlertCleared.AlertidEnum
-        self.assertEqual(Event(self.fixtureLowInsulin).alertid, E.LowInsulinAlert)
-        self.assertEqual(Event(self.fixtureLowPower).alertid, E.LowPowerAlert)
-        self.assertEqual(Event(self.fixtureIncompleteFillTubing).alertid,
+        self.assertEqual(Event(self.fixtureLowInsulin).alertId, E.LowInsulinAlert)
+        self.assertEqual(Event(self.fixtureLowPower).alertId, E.LowPowerAlert)
+        self.assertEqual(Event(self.fixtureIncompleteFillTubing).alertId,
                          E.IncompleteFillTubingAlert)
-        self.assertEqual(Event(self.fixtureControlIqLow).alertid, E.ControlIqLow)
+        self.assertEqual(Event(self.fixtureControlIqLow).alertId, E.ControlIqLow)
 
     def test_alertid_zero_resolves(self):
         # alertId 0 must resolve, not be dropped as a falsy/missing value.
         ev = Event(self.fixtureLowInsulin)
-        self.assertEqual(ev.alertidRaw, 0)
-        self.assertEqual(ev.alertid,
+        self.assertEqual(ev.alertIdRaw, 0)
+        self.assertEqual(ev.alertId,
                          eventtypes.LidAlertCleared.AlertidEnum.LowInsulinAlert)
 
     def test_todict_is_json_serializable(self):
@@ -105,8 +105,8 @@ class TestLidAlertCleared(unittest.TestCase):
         self.assertEqual(d["id"], 26)
         self.assertEqual(d["name"], "LID_ALERT_CLEARED")
         self.assertEqual(d["seqNum"], 396276)
-        self.assertEqual(d["alertidRaw"], 51)
-        self.assertEqual(d["faultlocatordata"], 0)
+        self.assertEqual(d["alertIdRaw"], 51)
+        self.assertEqual(d["faultLocatorData"], 0)
 
 
 if __name__ == "__main__":

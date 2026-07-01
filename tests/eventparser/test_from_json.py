@@ -136,16 +136,16 @@ class TestEnumAndRatioFields(unittest.TestCase):
     def test_dictionary_enum_resolves_from_raw_int(self):
         # alarmId:18 -> ResumePumpAlarm (stored on the alarmidRaw attr)
         ev = Event(ALARM_5)
-        self.assertEqual(ev.alarmidRaw, 18)
-        self.assertEqual(ev.alarmid,
+        self.assertEqual(ev.alarmIdRaw, 18)
+        self.assertEqual(ev.alarmId,
                          eventtypes.LidAlarmActivated.AlarmidEnum.ResumePumpAlarm)
 
     def test_multiple_enums_on_one_event(self):
         # requestedAction:2 -> StopSleep; previousUserMode:1 -> Sleeping
         ev = Event(UMC_229)
-        self.assertEqual(ev.requestedaction,
+        self.assertEqual(ev.requestedAction,
                          eventtypes.LidAaUserModeChange.RequestedactionEnum.StopSleep)
-        self.assertEqual(ev.previoususermode,
+        self.assertEqual(ev.previousUserMode,
                          eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Sleeping)
 
     def test_ratio_field_scales(self):
@@ -157,8 +157,8 @@ class TestEnumAndRatioFields(unittest.TestCase):
     def test_enum_zero_value_resolves(self):
         # glucoseValueStatus:0 -> PreciseValue (0 must not be treated as missing)
         ev = Event(CGM_399)
-        self.assertEqual(ev.glucosevaluestatusRaw, 0)
-        self.assertEqual(ev.glucosevaluestatus,
+        self.assertEqual(ev.glucoseValueStatusRaw, 0)
+        self.assertEqual(ev.glucoseValueStatus,
                          eventtypes.LidCgmDataG7.GlucosevaluestatusEnum.PreciseValue)
 
 
@@ -170,8 +170,8 @@ class TestBitmaskFields(unittest.TestCase):
     def test_single_bit_array(self):
         # activeSleepSchedule:[0] -> 1<<0 == 1
         ev = Event(UMC_229)
-        self.assertEqual(ev.activesleepscheduleRaw, 1)
-        self.assertEqual(ev.activesleepschedule,
+        self.assertEqual(ev.activeSleepScheduleRaw, 1)
+        self.assertEqual(ev.activeSleepSchedule,
                          eventtypes.LidAaUserModeChange.ActivesleepscheduleBitmask.SleepSchedule1IsActive)
 
     def test_cgm_datatype_array(self):
@@ -193,12 +193,12 @@ class TestBitmaskFields(unittest.TestCase):
         event = dict(UMC_229)
         event["eventProperties"] = dict(UMC_229["eventProperties"], activeSleepSchedule=[])
         ev = Event(event)
-        self.assertEqual(ev.activesleepscheduleRaw, 0)
+        self.assertEqual(ev.activeSleepScheduleRaw, 0)
 
 
 class TestRawFieldShims(unittest.TestCase):
     """#15: process_device_status sorts on event.raw.timestamp; ProcessCGMReading
-    reads event.egvTimestamp as raw seconds — both must survive the JSON path."""
+    reads event.egvTimeStamp as raw seconds — both must survive the JSON path."""
     maxDiff = None
 
     def test_raw_timestamp_shim_available(self):
@@ -212,8 +212,8 @@ class TestRawFieldShims(unittest.TestCase):
         # egvTimeStamp (camelCase in the JSON) normalizes onto egvTimestamp and is
         # kept as a raw seconds int; ProcessCGMReading adds TANDEM_EPOCH to it.
         ev = Event(CGM_399)
-        self.assertEqual(ev.egvTimestamp, 579571288)
-        self.assertEqual(ev.currentglucosedisplayvalue, 167)
+        self.assertEqual(ev.egvTimeStamp, 579571288)
+        self.assertEqual(ev.currentGlucoseDisplayValue, 167)
 
 
 if __name__ == "__main__":

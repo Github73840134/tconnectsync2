@@ -42,13 +42,13 @@ class TestLidCannulaFilled(unittest.TestCase):
 
     def test_primesize_round_trips(self):
         ev = Event(self.fixtureCompleted)
-        self.assertEqual(ev.primesize, 0.3)
+        self.assertEqual(ev.primeSize, 0.3)
 
     def test_completionstatus_resolves_to_enum(self):
         # completionStatus:3 -> Completed
         ev = Event(self.fixtureCompleted)
-        self.assertEqual(ev.completionstatusRaw, 3)
-        self.assertEqual(ev.completionstatus,
+        self.assertEqual(ev.completionStatusRaw, 3)
+        self.assertEqual(ev.completionStatus,
                          eventtypes.LidCannulaFilled.CompletionstatusEnum.Completed)
 
     def test_unknown_infusionsettype_key_is_ignored(self):

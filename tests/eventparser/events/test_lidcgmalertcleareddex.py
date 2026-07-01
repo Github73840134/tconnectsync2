@@ -58,22 +58,22 @@ class TestLidCgmAlertClearedDex(unittest.TestCase):
                          "2026-05-01T17:18:01")
 
     def test_dalertid_resolves_to_enum(self):
-        self.assertEqual(Event(self.fixtureCgmLow).dalertidRaw, 3)
-        self.assertEqual(Event(self.fixtureCgmLow).dalertid,
+        self.assertEqual(Event(self.fixtureCgmLow).dalertIdRaw, 3)
+        self.assertEqual(Event(self.fixtureCgmLow).dalertId,
                          eventtypes.LidCgmAlertClearedDex.DalertidEnum.CgmLow)
 
-        self.assertEqual(Event(self.fixtureCgmFixedLow).dalertidRaw, 1)
-        self.assertEqual(Event(self.fixtureCgmFixedLow).dalertid,
+        self.assertEqual(Event(self.fixtureCgmFixedLow).dalertIdRaw, 1)
+        self.assertEqual(Event(self.fixtureCgmFixedLow).dalertId,
                          eventtypes.LidCgmAlertClearedDex.DalertidEnum.CgmFixedLow)
 
-        self.assertEqual(Event(self.fixtureCgmOutOfRange).dalertidRaw, 14)
-        self.assertEqual(Event(self.fixtureCgmOutOfRange).dalertid,
+        self.assertEqual(Event(self.fixtureCgmOutOfRange).dalertIdRaw, 14)
+        self.assertEqual(Event(self.fixtureCgmOutOfRange).dalertId,
                          eventtypes.LidCgmAlertClearedDex.DalertidEnum.CgmOutOfRange)
 
     def test_sensortype_resolves_to_enum(self):
         ev = Event(self.fixtureCgmLow)
-        self.assertEqual(ev.sensortypeRaw, 3)
-        self.assertEqual(ev.sensortype,
+        self.assertEqual(ev.sensorTypeRaw, 3)
+        self.assertEqual(ev.sensorType,
                          eventtypes.LidCgmAlertClearedDex.SensortypeEnum.CgmTypeDexcomG7)
 
     def test_todict_is_json_serializable(self):
@@ -83,8 +83,8 @@ class TestLidCgmAlertClearedDex(unittest.TestCase):
         self.assertEqual(d["id"], 370)
         self.assertEqual(d["name"], "LID_CGM_ALERT_CLEARED_DEX")
         self.assertEqual(d["seqNum"], 409147)
-        self.assertEqual(d["dalertidRaw"], 14)
-        self.assertEqual(d["sensortypeRaw"], 3)
+        self.assertEqual(d["dalertIdRaw"], 14)
+        self.assertEqual(d["sensorTypeRaw"], 3)
 
 
 if __name__ == "__main__":

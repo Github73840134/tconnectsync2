@@ -382,11 +382,11 @@ class TestPumpEventsRealEventTypes(unittest.TestCase):
         e = self._parse()["LidBolusCompleted"]
         self.assertEqual(e.eventId, 20)
         self.assertEqual(e.seqNum, 201)
-        self.assertEqual(e.bolusid, 777)
-        self.assertEqual(e.insulindelivered, 2.5)
-        self.assertEqual(e.insulinrequested, 2.5)
-        self.assertEqual(e.IOB, 1.1)
-        self.assertEqual(e.completionstatus,
+        self.assertEqual(e.bolusId, 777)
+        self.assertEqual(e.insulinDelivered, 2.5)
+        self.assertEqual(e.insulinRequested, 2.5)
+        self.assertEqual(e.iob, 1.1)
+        self.assertEqual(e.completionStatus,
                          eventtypes.LidBolusCompleted.CompletionstatusEnum.Completed)
 
     def test_basal_delivery_decodes(self):
@@ -402,8 +402,8 @@ class TestPumpEventsRealEventTypes(unittest.TestCase):
         e = self._parse()["LidCgmDataG7"]
         self.assertEqual(e.eventId, 399)
         self.assertEqual(e.seqNum, 203)
-        self.assertEqual(e.currentglucosedisplayvalue, 112)
-        self.assertEqual(e.glucosevaluestatus,
+        self.assertEqual(e.currentGlucoseDisplayValue, 112)
+        self.assertEqual(e.glucoseValueStatus,
                          eventtypes.LidCgmDataG7.GlucosevaluestatusEnum.PreciseValue)
         # cgmDataType bitmask array [0] -> bit 0 set -> Fmr
         self.assertEqual(e.cgmDataType,
@@ -415,9 +415,9 @@ class TestPumpEventsRealEventTypes(unittest.TestCase):
         e = self._parse()["LidAlarmActivated"]
         self.assertEqual(e.eventId, 5)
         self.assertEqual(e.seqNum, 204)
-        self.assertEqual(e.faultlocatordata, 100)
+        self.assertEqual(e.faultLocatorData, 100)
         self.assertEqual(e.param2, 2.0)
-        self.assertEqual(e.alarmid,
+        self.assertEqual(e.alarmId,
                          eventtypes.LidAlarmActivated.AlarmidEnum.OcclusionAlarm)
 
 

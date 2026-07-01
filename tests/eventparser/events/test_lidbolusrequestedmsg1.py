@@ -63,50 +63,50 @@ class TestLidBolusRequestedMsg1(unittest.TestCase):
 
     def test_plain_fields_round_trip(self):
         ev = Event(self.fixtureRemoteWithCarbs)
-        self.assertEqual(ev.bolusid, 1423)
-        self.assertEqual(ev.carbamount, 50)
-        self.assertEqual(ev.BG, 164)
-        self.assertEqual(ev.IOB, 1.82)
+        self.assertEqual(ev.bolusId, 1423)
+        self.assertEqual(ev.carbAmount, 50)
+        self.assertEqual(ev.bg, 164)
+        self.assertEqual(ev.iob, 1.82)
 
     def test_fractional_iob_and_zero_bg(self):
         ev = Event(self.fixtureInsulinNoCarbs)
-        self.assertEqual(ev.bolusid, 1425)
-        self.assertEqual(ev.carbamount, 0)
-        self.assertEqual(ev.BG, 0)
-        self.assertAlmostEqual(ev.IOB, 4.116488)
+        self.assertEqual(ev.bolusId, 1425)
+        self.assertEqual(ev.carbAmount, 0)
+        self.assertEqual(ev.bg, 0)
+        self.assertAlmostEqual(ev.iob, 4.116488)
 
     def test_bolustype_remote(self):
         ev = Event(self.fixtureRemoteWithCarbs)
-        self.assertEqual(ev.bolustypeRaw, 3)
-        self.assertEqual(ev.bolustype,
+        self.assertEqual(ev.bolusTypeRaw, 3)
+        self.assertEqual(ev.bolusType,
                          eventtypes.LidBolusRequestedMsg1.BolustypeEnum.Remote)
 
     def test_bolustype_insulin(self):
         # bolusType 0 must resolve (0 not treated as missing).
         ev = Event(self.fixtureInsulinNoCarbs)
-        self.assertEqual(ev.bolustypeRaw, 0)
-        self.assertEqual(ev.bolustype,
+        self.assertEqual(ev.bolusTypeRaw, 0)
+        self.assertEqual(ev.bolusType,
                          eventtypes.LidBolusRequestedMsg1.BolustypeEnum.Insulin)
 
     def test_correctionbolusincluded_no(self):
         ev = Event(self.fixtureRemoteWithCarbs)
-        self.assertEqual(ev.correctionbolusincludedRaw, 0)
+        self.assertEqual(ev.correctionBolusIncludedRaw, 0)
         self.assertEqual(
-            ev.correctionbolusincluded,
+            ev.correctionBolusIncluded,
             eventtypes.LidBolusRequestedMsg1.CorrectionbolusincludedEnum.No)
 
     def test_correctionbolusincluded_yes(self):
         ev = Event(self.fixtureRemoteWithCorrection)
-        self.assertEqual(ev.correctionbolusincludedRaw, 1)
+        self.assertEqual(ev.correctionBolusIncludedRaw, 1)
         self.assertEqual(
-            ev.correctionbolusincluded,
+            ev.correctionBolusIncluded,
             eventtypes.LidBolusRequestedMsg1.CorrectionbolusincludedEnum.Yes)
 
     def test_carbratio_scales(self):
         # carbratio is carbratioRaw * 0.001; real captures carry 0.
         ev = Event(self.fixtureRemoteWithCorrection)
-        self.assertEqual(ev.carbratioRaw, 0)
-        self.assertAlmostEqual(ev.carbratio, 0.0)
+        self.assertEqual(ev.carbRatioRaw, 0)
+        self.assertAlmostEqual(ev.carbRatio, 0.0)
 
     def test_todict_is_json_serializable(self):
         for fixture in (self.fixtureRemoteWithCarbs,
@@ -117,7 +117,7 @@ class TestLidBolusRequestedMsg1(unittest.TestCase):
             json.dumps(d)  # must not raise
             self.assertEqual(d["id"], 64)
             self.assertEqual(d["name"], "LID_BOLUS_REQUESTED_MSG1")
-            self.assertEqual(d["bolusid"],
+            self.assertEqual(d["bolusId"],
                              fixture["eventProperties"]["bolusId"])
 
 

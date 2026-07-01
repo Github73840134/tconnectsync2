@@ -83,7 +83,7 @@ class ProcessBasal:
 
     def basal_to_nsentry(self, start: arrow.Arrow, duration: datetime.timedelta, event: "BaseEvent") -> Optional[dict]:
         if type(event) == eventtypes.LidBasalRateChange:
-            value = insulin_float_round(event.commandedbasalrate)
+            value = insulin_float_round(event.commandedBasalRate)
             if IGNORE_ZERO_UNIT_BASAL and value < 0.01:
                 logger.info("Ignoring basal entry with %.2f unit basal because IGNORE_ZERO_UNIT_BASAL=true: %s" % (value, event))
                 return None
@@ -91,7 +91,7 @@ class ProcessBasal:
                 value = value,
                 duration_mins = duration.total_seconds() / 60,
                 created_at = start.format(),
-                reason = ', '.join(bitmask_to_list(event.changetype)),
+                reason = ', '.join(bitmask_to_list(event.changeType)),
                 pump_event_id = "%s" % event.seqNum
             )
         if type(event) == eventtypes.LidBasalDelivery:

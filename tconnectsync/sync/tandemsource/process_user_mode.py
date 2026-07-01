@@ -138,23 +138,23 @@ class ProcessUserMode:
         return count
 
     def is_start_sleep(self, event: "BaseEvent") -> bool:
-        return event.requestedaction == eventtypes.LidAaUserModeChange.RequestedactionEnum.StartSleep
+        return event.requestedAction == eventtypes.LidAaUserModeChange.RequestedactionEnum.StartSleep
     def is_stop_sleep(self, event: "BaseEvent") -> bool:
-        return event.requestedaction == eventtypes.LidAaUserModeChange.RequestedactionEnum.StopSleep or \
-               event.requestedaction == eventtypes.LidAaUserModeChange.RequestedactionEnum.StopAll
+        return event.requestedAction == eventtypes.LidAaUserModeChange.RequestedactionEnum.StopSleep or \
+               event.requestedAction == eventtypes.LidAaUserModeChange.RequestedactionEnum.StopAll
     def is_start_exercise(self, event: "BaseEvent") -> bool:
-        return event.requestedaction == eventtypes.LidAaUserModeChange.RequestedactionEnum.StartExercise
+        return event.requestedAction == eventtypes.LidAaUserModeChange.RequestedactionEnum.StartExercise
     def is_stop_exercise(self, event: "BaseEvent") -> bool:
-        return event.requestedaction == eventtypes.LidAaUserModeChange.RequestedactionEnum.StopExercise or \
-               event.requestedaction == eventtypes.LidAaUserModeChange.RequestedactionEnum.StopAll
+        return event.requestedAction == eventtypes.LidAaUserModeChange.RequestedactionEnum.StopExercise or \
+               event.requestedAction == eventtypes.LidAaUserModeChange.RequestedactionEnum.StopAll
 
 
     def sleep_to_nsentry(self, start: "BaseEvent", stop: Optional["BaseEvent"] = None, time_end: Optional[arrow.Arrow] = None) -> Optional[dict]:
         if start and stop:
             reason = None
-            if start.sleepstartedbygui == eventtypes.LidAaUserModeChange.SleepstartedbyguiEnum.TrueVal:
+            if start.sleepStartedByGui == eventtypes.LidAaUserModeChange.SleepstartedbyguiEnum.TrueVal:
                 reason = "Sleep (Manual)"
-            elif start.activesleepschedule:
+            elif start.activeSleepSchedule:
                 reason = "Sleep (Scheduled)"
 
             duration_mins = (stop.eventTimestamp - start.eventTimestamp).total_seconds() / 60
@@ -167,9 +167,9 @@ class ProcessUserMode:
             )
         elif start:
             reason = None
-            if start.sleepstartedbygui == eventtypes.LidAaUserModeChange.SleepstartedbyguiEnum.TrueVal:
+            if start.sleepStartedByGui == eventtypes.LidAaUserModeChange.SleepstartedbyguiEnum.TrueVal:
                 reason = "Sleep (Manual)"
-            elif start.activesleepscheduleRaw:
+            elif start.activeSleepScheduleRaw:
                 reason = "Sleep (Scheduled)"
 
             duration_mins = (time_end - start.eventTimestamp).total_seconds() / 60
@@ -185,10 +185,10 @@ class ProcessUserMode:
     def exercise_to_nsentry(self, start: "BaseEvent", stop: Optional["BaseEvent"] = None, time_end: Optional[arrow.Arrow] = None) -> Optional[dict]:
         if start and stop:
             reason = "Exercise"
-            if start.exercisechoice == eventtypes.LidAaUserModeChange.ExercisechoiceEnum.Timed:
+            if start.exerciseChoice == eventtypes.LidAaUserModeChange.ExercisechoiceEnum.Timed:
                 reason = "Exercise (Timed)"
 
-            if stop.exercisestoppedbytimer == eventtypes.LidAaUserModeChange.ExercisestoppedbytimerEnum.TrueVal:
+            if stop.exerciseStoppedByTimer == eventtypes.LidAaUserModeChange.ExercisestoppedbytimerEnum.TrueVal:
                 reason += " (Stopped by timer)"
 
             duration_mins = (stop.eventTimestamp - start.eventTimestamp).total_seconds() / 60
@@ -201,7 +201,7 @@ class ProcessUserMode:
             )
         elif start:
             reason = "Exercise"
-            if start.exercisechoice == eventtypes.LidAaUserModeChange.ExercisechoiceEnum.Timed:
+            if start.exerciseChoice == eventtypes.LidAaUserModeChange.ExercisechoiceEnum.Timed:
                 reason = "Exercise (Timed)"
 
             duration_mins = (time_end - start.eventTimestamp).total_seconds() / 60
@@ -237,7 +237,7 @@ class ProcessUserMode:
             self.nightscout.delete_entry('treatments/%s' % exercise_last_upload["_id"])
 
         reason = exercise_last_upload["reason"].replace(" - %s" % NOT_ENDED, "")
-        if event.exercisestoppedbytimer == eventtypes.LidAaUserModeChange.ExercisestoppedbytimerEnum.TrueVal:
+        if event.exerciseStoppedByTimer == eventtypes.LidAaUserModeChange.ExercisestoppedbytimerEnum.TrueVal:
             reason += " (Stopped by timer)"
 
         duration_mins = (event.eventTimestamp - arrow.get(exercise_last_upload["created_at"])).total_seconds() / 60

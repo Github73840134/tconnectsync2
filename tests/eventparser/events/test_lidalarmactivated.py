@@ -56,23 +56,23 @@ class TestLidAlarmActivated(unittest.TestCase):
     def test_alarmid_resolves_resume_pump_alarm(self):
         # alarmId:18 -> RESUME_PUMP_ALARM
         ev = Event(self.fixtureResumePumpAlarm)
-        self.assertEqual(ev.alarmidRaw, 18)
-        self.assertEqual(ev.alarmid, eventtypes.LidAlarmActivated.AlarmidEnum.ResumePumpAlarm)
+        self.assertEqual(ev.alarmIdRaw, 18)
+        self.assertEqual(ev.alarmId, eventtypes.LidAlarmActivated.AlarmidEnum.ResumePumpAlarm)
 
     def test_alarmid_resolves_resume_pump_alarm2(self):
         # alarmId:23 -> RESUME_PUMP_ALARM2
         ev = Event(self.fixtureResumePumpAlarm2)
-        self.assertEqual(ev.alarmidRaw, 23)
-        self.assertEqual(ev.alarmid, eventtypes.LidAlarmActivated.AlarmidEnum.ResumePumpAlarm2)
+        self.assertEqual(ev.alarmIdRaw, 23)
+        self.assertEqual(ev.alarmId, eventtypes.LidAlarmActivated.AlarmidEnum.ResumePumpAlarm2)
 
     def test_plain_fields(self):
         ev = Event(self.fixtureResumePumpAlarm)
-        self.assertEqual(ev.faultlocatordata, 8311)
+        self.assertEqual(ev.faultLocatorData, 8311)
         self.assertEqual(ev.param1, 3993668)
         self.assertEqual(ev.param2, 0)
 
         ev2 = Event(self.fixtureResumePumpAlarm2)
-        self.assertEqual(ev2.faultlocatordata, 8311)
+        self.assertEqual(ev2.faultLocatorData, 8311)
         self.assertEqual(ev2.param1, 18)
         self.assertEqual(ev2.param2, 0)
 
@@ -89,8 +89,8 @@ class TestLidAlarmActivated(unittest.TestCase):
             "name": "LID_ALARM_ACTIVATED",
             "seqNum": 398724,
             "eventTimestamp": "2026-05-01T17:08:10-04:00",
-            "alarmidRaw": 18,
-            "faultlocatordata": 8311,
+            "alarmIdRaw": 18,
+            "faultLocatorData": 8311,
             "param1": 3993668,
             "param2": 0,
         })

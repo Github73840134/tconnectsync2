@@ -89,7 +89,7 @@ class TestLidCgmAlertActivatedDex(unittest.TestCase):
 
     def test_plain_fields_round_trip(self):
         ev = Event(self.fixtureOutOfRange)
-        self.assertEqual(ev.faultlocatordata, 8462)
+        self.assertEqual(ev.faultLocatorData, 8462)
         self.assertEqual(ev.param1, 25)
         self.assertEqual(ev.param2, 917)
 
@@ -103,16 +103,16 @@ class TestLidCgmAlertActivatedDex(unittest.TestCase):
         ]
         for f, raw, member in cases:
             ev = Event(f)
-            self.assertEqual(ev.dalertidRaw, raw)
-            self.assertEqual(ev.dalertid, member)
+            self.assertEqual(ev.dalertIdRaw, raw)
+            self.assertEqual(ev.dalertId, member)
 
     def test_sensortype_enum_resolves(self):
         # every capture is sensorType:3 -> Dexcom G7
         for f in (self.fixtureHigh, self.fixtureLow, self.fixtureFixedLow,
                   self.fixtureOutOfRange, self.fixtureSensorFail):
             ev = Event(f)
-            self.assertEqual(ev.sensortypeRaw, 3)
-            self.assertEqual(ev.sensortype,
+            self.assertEqual(ev.sensorTypeRaw, 3)
+            self.assertEqual(ev.sensorType,
                              eventtypes.LidCgmAlertActivatedDex.SensortypeEnum.CgmTypeDexcomG7)
 
     def test_todict_is_json_serializable(self):

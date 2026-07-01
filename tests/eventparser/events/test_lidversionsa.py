@@ -47,10 +47,10 @@ class TestLidVersionsA(unittest.TestCase):
 
     def test_plain_fields_round_trip(self):
         ev = Event(self.fixtureVersions)
-        self.assertEqual(ev.armpartnumber, 1016587)
-        self.assertEqual(ev.armswversion, 1108201743)
-        self.assertEqual(ev.blepartnumber, 1016587)
-        self.assertEqual(ev.bleswversion, 1108201743)
+        self.assertEqual(ev.armPartNumber, 1016587)
+        self.assertEqual(ev.armSwVersion, 1108201743)
+        self.assertEqual(ev.blePartNumber, 1016587)
+        self.assertEqual(ev.bleSwVersion, 1108201743)
 
     def test_todict_is_json_serializable(self):
         ev = Event(self.fixtureVersions)
@@ -59,10 +59,10 @@ class TestLidVersionsA(unittest.TestCase):
         self.assertEqual(d["id"], 307)
         self.assertEqual(d["name"], "LID_VERSIONS_A")
         self.assertEqual(d["seqNum"], 393111)
-        self.assertEqual(d["armpartnumber"], 1016587)
-        self.assertEqual(d["armswversion"], 1108201743)
-        self.assertEqual(d["blepartnumber"], 1016587)
-        self.assertEqual(d["bleswversion"], 1108201743)
+        self.assertEqual(d["armPartNumber"], 1016587)
+        self.assertEqual(d["armSwVersion"], 1108201743)
+        self.assertEqual(d["blePartNumber"], 1016587)
+        self.assertEqual(d["bleSwVersion"], 1108201743)
 
 
 if __name__ == "__main__":

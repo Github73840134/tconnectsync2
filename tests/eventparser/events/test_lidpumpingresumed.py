@@ -50,14 +50,14 @@ class TestLidPumpingResumed(unittest.TestCase):
 
     def test_plain_fields(self):
         ev = Event(self.fixtureA)
-        self.assertEqual(ev.preresumestate, 100)
-        self.assertEqual(ev.insulinamount, 105)
+        self.assertEqual(ev.preResumeState, 100)
+        self.assertEqual(ev.insulinAmount, 105)
 
     def test_insulin_amount_varies_across_captures(self):
-        self.assertEqual(Event(self.fixtureA).insulinamount, 105)
-        self.assertEqual(Event(self.fixtureB).insulinamount, 13)
+        self.assertEqual(Event(self.fixtureA).insulinAmount, 105)
+        self.assertEqual(Event(self.fixtureB).insulinAmount, 13)
         # preResumeState is constant across real captures.
-        self.assertEqual(Event(self.fixtureB).preresumestate, 100)
+        self.assertEqual(Event(self.fixtureB).preResumeState, 100)
 
     def test_todict_is_json_serializable(self):
         ev = Event(self.fixtureB)
@@ -66,8 +66,8 @@ class TestLidPumpingResumed(unittest.TestCase):
         self.assertEqual(d["id"], 12)
         self.assertEqual(d["name"], "LID_PUMPING_RESUMED")
         self.assertEqual(d["seqNum"], 478545)
-        self.assertEqual(d["preresumestate"], 100)
-        self.assertEqual(d["insulinamount"], 13)
+        self.assertEqual(d["preResumeState"], 100)
+        self.assertEqual(d["insulinAmount"], 13)
 
 
 if __name__ == "__main__":

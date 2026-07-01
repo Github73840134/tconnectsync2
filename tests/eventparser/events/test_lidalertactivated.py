@@ -95,41 +95,41 @@ class TestLidAlertActivated(unittest.TestCase):
 
     def test_plain_fields(self):
         ev = Event(self.fixtureLowInsulinFloat)
-        self.assertEqual(ev.faultlocatordata, 8242)
+        self.assertEqual(ev.faultLocatorData, 8242)
         self.assertEqual(ev.param1, 102)
         self.assertAlmostEqual(ev.param2, 249.76517)
 
         ev = Event(self.fixtureIncompleteFillTubing)
-        self.assertEqual(ev.faultlocatordata, 8378)
+        self.assertEqual(ev.faultLocatorData, 8378)
         self.assertEqual(ev.param1, 0)
         self.assertEqual(ev.param2, 0)
 
     def test_alertid_enum_resolves_from_raw_int(self):
         ev = Event(self.fixtureDefaultAlert50)
-        self.assertEqual(ev.alertidRaw, 50)
-        self.assertEqual(ev.alertid,
+        self.assertEqual(ev.alertIdRaw, 50)
+        self.assertEqual(ev.alertId,
                          eventtypes.LidAlertActivated.AlertidEnum.DefaultAlert50)
 
         ev = Event(self.fixtureControlIqLow)
-        self.assertEqual(ev.alertidRaw, 51)
-        self.assertEqual(ev.alertid,
+        self.assertEqual(ev.alertIdRaw, 51)
+        self.assertEqual(ev.alertId,
                          eventtypes.LidAlertActivated.AlertidEnum.ControlIqLow)
 
         ev = Event(self.fixtureIncompleteFillTubing)
-        self.assertEqual(ev.alertidRaw, 14)
-        self.assertEqual(ev.alertid,
+        self.assertEqual(ev.alertIdRaw, 14)
+        self.assertEqual(ev.alertId,
                          eventtypes.LidAlertActivated.AlertidEnum.IncompleteFillTubingAlert)
 
         ev = Event(self.fixtureLowPower)
-        self.assertEqual(ev.alertidRaw, 2)
-        self.assertEqual(ev.alertid,
+        self.assertEqual(ev.alertIdRaw, 2)
+        self.assertEqual(ev.alertId,
                          eventtypes.LidAlertActivated.AlertidEnum.LowPowerAlert)
 
     def test_alertid_zero_value_resolves(self):
         # alertId:0 -> LowInsulinAlert (0 must not be treated as missing).
         ev = Event(self.fixtureLowInsulinFloat)
-        self.assertEqual(ev.alertidRaw, 0)
-        self.assertEqual(ev.alertid,
+        self.assertEqual(ev.alertIdRaw, 0)
+        self.assertEqual(ev.alertId,
                          eventtypes.LidAlertActivated.AlertidEnum.LowInsulinAlert)
 
     def test_todict_is_json_serializable(self):
@@ -145,8 +145,8 @@ class TestLidAlertActivated(unittest.TestCase):
         ev = Event(self.fixtureLowInsulinFloat)
         d = ev.todict()
         self.assertEqual(d["seqNum"], 398333)
-        self.assertEqual(d["alertidRaw"], 0)
-        self.assertEqual(d["faultlocatordata"], 8242)
+        self.assertEqual(d["alertIdRaw"], 0)
+        self.assertEqual(d["faultLocatorData"], 8242)
         self.assertEqual(d["param1"], 102)
         self.assertAlmostEqual(d["param2"], 249.76517)
 

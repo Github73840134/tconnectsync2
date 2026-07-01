@@ -78,58 +78,58 @@ class TestLidAaPcmChange(unittest.TestCase):
     def test_pcm_enums_no_control_from_closed_loop(self):
         # currentPcm:0 -> NoControl, previousPcm:3 -> ClosedLoop
         ev = Event(self.fixtureSuspendedNoControl)
-        self.assertEqual(ev.currentpcmRaw, 0)
-        self.assertEqual(ev.currentpcm,
+        self.assertEqual(ev.currentPcmRaw, 0)
+        self.assertEqual(ev.currentPcm,
                          eventtypes.LidAaPcmChange.CurrentpcmEnum.NoControl)
-        self.assertEqual(ev.previouspcmRaw, 3)
-        self.assertEqual(ev.previouspcm,
+        self.assertEqual(ev.previousPcmRaw, 3)
+        self.assertEqual(ev.previousPcm,
                          eventtypes.LidAaPcmChange.PreviouspcmEnum.ClosedLoop)
 
     def test_pcm_enums_closed_loop_from_no_control(self):
         # currentPcm:3 -> ClosedLoop, previousPcm:0 -> NoControl
         ev = Event(self.fixtureResumedClosedLoop)
-        self.assertEqual(ev.currentpcm,
+        self.assertEqual(ev.currentPcm,
                          eventtypes.LidAaPcmChange.CurrentpcmEnum.ClosedLoop)
-        self.assertEqual(ev.previouspcm,
+        self.assertEqual(ev.previousPcm,
                          eventtypes.LidAaPcmChange.PreviouspcmEnum.NoControl)
 
     def test_pcm_enum_pining(self):
         # currentPcm:2 -> Pining
         ev = Event(self.fixturePiningNoCgm)
-        self.assertEqual(ev.currentpcmRaw, 2)
-        self.assertEqual(ev.currentpcm,
+        self.assertEqual(ev.currentPcmRaw, 2)
+        self.assertEqual(ev.currentPcm,
                          eventtypes.LidAaPcmChange.CurrentpcmEnum.Pining)
 
     def test_boolean_fields_when_suspended(self):
         ev = Event(self.fixtureSuspendedNoControl)
-        self.assertEqual(ev.pumpsuspendedRaw, 1)
-        self.assertEqual(ev.pumpsuspended,
+        self.assertEqual(ev.pumpSuspendedRaw, 1)
+        self.assertEqual(ev.pumpSuspended,
                          eventtypes.LidAaPcmChange.PumpsuspendedEnum.TrueVal)
-        self.assertEqual(ev.calculationavailable,
+        self.assertEqual(ev.calculationAvailable,
                          eventtypes.LidAaPcmChange.CalculationavailableEnum.TrueVal)
-        self.assertEqual(ev.cgmavailable,
+        self.assertEqual(ev.cgmAvailable,
                          eventtypes.LidAaPcmChange.CgmavailableEnum.TrueVal)
-        self.assertEqual(ev.closedlooppreferred,
+        self.assertEqual(ev.closedLoopPreferred,
                          eventtypes.LidAaPcmChange.ClosedlooppreferredEnum.TrueVal)
-        self.assertEqual(ev.sufficientclosedloopparams,
+        self.assertEqual(ev.sufficientClosedLoopParams,
                          eventtypes.LidAaPcmChange.SufficientclosedloopparamsEnum.TrueVal)
 
     def test_pump_suspended_false(self):
         # pumpSuspended:0 -> FalseVal (0 must not be treated as missing)
         ev = Event(self.fixtureResumedClosedLoop)
-        self.assertEqual(ev.pumpsuspendedRaw, 0)
-        self.assertEqual(ev.pumpsuspended,
+        self.assertEqual(ev.pumpSuspendedRaw, 0)
+        self.assertEqual(ev.pumpSuspended,
                          eventtypes.LidAaPcmChange.PumpsuspendedEnum.FalseVal)
 
     def test_cgm_available_false(self):
         # cgmAvailable:0 -> FalseVal while other boolean-ish fields stay TrueVal
         ev = Event(self.fixturePiningNoCgm)
-        self.assertEqual(ev.cgmavailableRaw, 0)
-        self.assertEqual(ev.cgmavailable,
+        self.assertEqual(ev.cgmAvailableRaw, 0)
+        self.assertEqual(ev.cgmAvailable,
                          eventtypes.LidAaPcmChange.CgmavailableEnum.FalseVal)
-        self.assertEqual(ev.calculationavailable,
+        self.assertEqual(ev.calculationAvailable,
                          eventtypes.LidAaPcmChange.CalculationavailableEnum.TrueVal)
-        self.assertEqual(ev.closedlooppreferred,
+        self.assertEqual(ev.closedLoopPreferred,
                          eventtypes.LidAaPcmChange.ClosedlooppreferredEnum.TrueVal)
 
     def test_todict_is_json_serializable(self):

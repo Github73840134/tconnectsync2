@@ -56,14 +56,14 @@ class TestLidAlarmCleared(unittest.TestCase):
     def test_alarmid_resolves_resume_pump_alarm(self):
         # alarmId:18 -> RESUME_PUMP_ALARM
         ev = Event(self.fixtureResumePumpAlarm)
-        self.assertEqual(ev.alarmidRaw, 18)
-        self.assertEqual(ev.alarmid, eventtypes.LidAlarmCleared.AlarmidEnum.ResumePumpAlarm)
+        self.assertEqual(ev.alarmIdRaw, 18)
+        self.assertEqual(ev.alarmId, eventtypes.LidAlarmCleared.AlarmidEnum.ResumePumpAlarm)
 
     def test_alarmid_resolves_resume_pump_alarm2(self):
         # alarmId:23 -> RESUME_PUMP_ALARM2
         ev = Event(self.fixtureResumePumpAlarm2)
-        self.assertEqual(ev.alarmidRaw, 23)
-        self.assertEqual(ev.alarmid, eventtypes.LidAlarmCleared.AlarmidEnum.ResumePumpAlarm2)
+        self.assertEqual(ev.alarmIdRaw, 23)
+        self.assertEqual(ev.alarmId, eventtypes.LidAlarmCleared.AlarmidEnum.ResumePumpAlarm2)
 
     def test_todict_is_json_serializable(self):
         for f in (self.fixtureResumePumpAlarm, self.fixtureResumePumpAlarm2):
@@ -78,7 +78,7 @@ class TestLidAlarmCleared(unittest.TestCase):
             "name": "LID_ALARM_CLEARED",
             "seqNum": 398734,
             "eventTimestamp": "2026-05-01T17:11:22-04:00",
-            "alarmidRaw": 18,
+            "alarmIdRaw": 18,
         })
 
 

@@ -80,26 +80,26 @@ class TestLidNewDay(unittest.TestCase):
 
     def test_commanded_basal_rate_zero(self):
         ev = Event(self.fixtureZeroBasal)
-        self.assertEqual(ev.commandedbasalrate, 0)
+        self.assertEqual(ev.commandedBasalRate, 0)
 
     def test_commanded_basal_rate_fractional(self):
         ev = Event(self.fixtureFractionalBasal)
-        self.assertEqual(ev.commandedbasalrate, 0.763)
+        self.assertEqual(ev.commandedBasalRate, 0.763)
 
     def test_commanded_basal_rate_unit(self):
         ev = Event(self.fixtureUnitBasal)
-        self.assertEqual(ev.commandedbasalrate, 1)
+        self.assertEqual(ev.commandedBasalRate, 1)
 
     def test_features_bitmask_holds_list_verbatim(self):
         # No transform on the schema: the captured list is stored as-is.
         ev = Event(self.fixtureZeroBasal)
-        self.assertEqual(ev.featuresbitmask, [])
-        self.assertIsInstance(ev.featuresbitmask, list)
+        self.assertEqual(ev.featuresBitmask, [])
+        self.assertIsInstance(ev.featuresBitmask, list)
 
     def test_feature_bitmask_index_holds_list_verbatim(self):
         ev = Event(self.fixtureZeroBasal)
-        self.assertEqual(ev.featurebitmaskindex, [])
-        self.assertIsInstance(ev.featurebitmaskindex, list)
+        self.assertEqual(ev.featureBitmaskIndex, [])
+        self.assertIsInstance(ev.featureBitmaskIndex, list)
 
     def test_todict_is_json_serializable(self):
         ev = Event(self.fixtureFractionalBasal)
@@ -108,9 +108,9 @@ class TestLidNewDay(unittest.TestCase):
         self.assertEqual(d["id"], 90)
         self.assertEqual(d["name"], "LID_NEW_DAY")
         self.assertEqual(d["seqNum"], 396368)
-        self.assertEqual(d["commandedbasalrate"], 0.763)
-        self.assertEqual(d["featuresbitmask"], [])
-        self.assertEqual(d["featurebitmaskindex"], [])
+        self.assertEqual(d["commandedBasalRate"], 0.763)
+        self.assertEqual(d["featuresBitmask"], [])
+        self.assertEqual(d["featureBitmaskIndex"], [])
 
 
 if __name__ == "__main__":

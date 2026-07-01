@@ -78,7 +78,7 @@ class TestLidBolusDelivery(unittest.TestCase):
 
     def test_plain_fields_round_trip(self):
         ev = Event(self.fixtureCarbCorrectionStarted)
-        self.assertEqual(ev.bolusid, 1426)
+        self.assertEqual(ev.bolusId, 1426)
         self.assertEqual(ev.requestedNow, 10960)
         self.assertEqual(ev.deliveredTotal, 0)
         self.assertEqual(ev.correction, 130)
@@ -88,7 +88,7 @@ class TestLidBolusDelivery(unittest.TestCase):
 
     def test_completion_carries_delivered_total(self):
         ev = Event(self.fixtureCarbCorrectionCompleted)
-        self.assertEqual(ev.bolusid, 1426)
+        self.assertEqual(ev.bolusId, 1426)
         self.assertEqual(ev.deliveredTotal, 10960)
 
     def test_bolustype_single_bit_folds_and_resolves(self):

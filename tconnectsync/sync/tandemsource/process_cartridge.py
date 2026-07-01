@@ -86,7 +86,7 @@ class ProcessCartridge:
 
     def cart_to_nsentry(self, cartFilled: "BaseEvent") -> Optional[dict]:
         # insulinVolume is populated on t:slim X2 / Mobi; v2Volume is a legacy fallback.
-        volume = cartFilled.insulinvolume or cartFilled.v2Volume
+        volume = cartFilled.insulinVolume or cartFilled.v2Volume
         return NightscoutEntry.sitechange(
             created_at = cartFilled.eventTimestamp.format(),
             reason = "Cartridge Filled" + (" (%du filled)" % round(volume) if volume else ""),
@@ -95,7 +95,7 @@ class ProcessCartridge:
 
     def cannula_to_nsentry(self, cannulaFilled: "BaseEvent") -> Optional[dict]:
         # primeSize is fractional (e.g. 0.3u); format with one decimal, not %d.
-        primed = cannulaFilled.primesize if cannulaFilled.primesize and cannulaFilled.primesize > 0 else None
+        primed = cannulaFilled.primeSize if cannulaFilled.primeSize and cannulaFilled.primeSize > 0 else None
         return NightscoutEntry.sitechange(
             created_at = cannulaFilled.eventTimestamp.format(),
             reason = "Cannula Filled" + (" (%.1fu primed)" % primed if primed else ""),
@@ -104,7 +104,7 @@ class ProcessCartridge:
 
     def tubing_to_nsentry(self, tubingFilled: "BaseEvent") -> Optional[dict]:
         # primeSize is -1 (sentinel, "not recorded") on real tubing fills; only show a real prime volume.
-        primed = tubingFilled.primesize if tubingFilled.primesize and tubingFilled.primesize > 0 else None
+        primed = tubingFilled.primeSize if tubingFilled.primeSize and tubingFilled.primeSize > 0 else None
         return NightscoutEntry.sitechange(
             created_at = tubingFilled.eventTimestamp.format(),
             reason = "Tubing Filled" + (" (%du primed)" % round(primed) if primed else ""),

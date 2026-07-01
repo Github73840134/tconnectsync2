@@ -97,57 +97,57 @@ class TestLidAaUserModeChange(unittest.TestCase):
 
     def test_stop_sleep_enums(self):
         ev = Event(self.fixtureStopSleep)
-        self.assertEqual(ev.currentusermodeRaw, 0)
-        self.assertEqual(ev.currentusermode,
+        self.assertEqual(ev.currentUserModeRaw, 0)
+        self.assertEqual(ev.currentUserMode,
                          eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Normal)
-        self.assertEqual(ev.previoususermodeRaw, 1)
-        self.assertEqual(ev.previoususermode,
+        self.assertEqual(ev.previousUserModeRaw, 1)
+        self.assertEqual(ev.previousUserMode,
                          eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Sleeping)
-        self.assertEqual(ev.requestedactionRaw, 2)
-        self.assertEqual(ev.requestedaction,
+        self.assertEqual(ev.requestedActionRaw, 2)
+        self.assertEqual(ev.requestedAction,
                          eventtypes.LidAaUserModeChange.RequestedactionEnum.StopSleep)
 
     def test_start_sleep_enums(self):
         ev = Event(self.fixtureStartSleep)
-        self.assertEqual(ev.currentusermode,
+        self.assertEqual(ev.currentUserMode,
                          eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Sleeping)
-        self.assertEqual(ev.previoususermode,
+        self.assertEqual(ev.previousUserMode,
                          eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Normal)
-        self.assertEqual(ev.requestedaction,
+        self.assertEqual(ev.requestedAction,
                          eventtypes.LidAaUserModeChange.RequestedactionEnum.StartSleep)
 
     def test_start_exercise_enums(self):
         ev = Event(self.fixtureStartExercise)
-        self.assertEqual(ev.currentusermode,
+        self.assertEqual(ev.currentUserMode,
                          eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Exercising)
-        self.assertEqual(ev.previoususermode,
+        self.assertEqual(ev.previousUserMode,
                          eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Normal)
-        self.assertEqual(ev.requestedaction,
+        self.assertEqual(ev.requestedAction,
                          eventtypes.LidAaUserModeChange.RequestedactionEnum.StartExercise)
 
     def test_stop_exercise_enums(self):
         ev = Event(self.fixtureStopExercise)
-        self.assertEqual(ev.currentusermode,
+        self.assertEqual(ev.currentUserMode,
                          eventtypes.LidAaUserModeChange.CurrentusermodeEnum.Sleeping)
-        self.assertEqual(ev.previoususermode,
+        self.assertEqual(ev.previousUserMode,
                          eventtypes.LidAaUserModeChange.PrevioususermodeEnum.Exercising)
-        self.assertEqual(ev.requestedaction,
+        self.assertEqual(ev.requestedAction,
                          eventtypes.LidAaUserModeChange.RequestedactionEnum.StopExercise)
 
     def test_active_sleep_schedule_single_bit(self):
         # activeSleepSchedule:[0] -> 1<<0 == 1 -> SleepSchedule1IsActive
         ev = Event(self.fixtureStopSleep)
-        self.assertEqual(ev.activesleepscheduleRaw, 1)
-        self.assertEqual(ev.activesleepschedule,
+        self.assertEqual(ev.activeSleepScheduleRaw, 1)
+        self.assertEqual(ev.activeSleepSchedule,
                          eventtypes.LidAaUserModeChange.ActivesleepscheduleBitmask.SleepSchedule1IsActive)
 
     def test_active_sleep_schedule_empty(self):
         # An empty array folds to 0 (empty IntFlag), not None.
         ev = Event(self.fixtureStartExercise)
-        self.assertEqual(ev.activesleepscheduleRaw, 0)
-        self.assertEqual(ev.activesleepschedule,
+        self.assertEqual(ev.activeSleepScheduleRaw, 0)
+        self.assertEqual(ev.activeSleepSchedule,
                          eventtypes.LidAaUserModeChange.ActivesleepscheduleBitmask(0))
-        self.assertEqual(int(ev.activesleepschedule), 0)
+        self.assertEqual(int(ev.activeSleepSchedule), 0)
 
     def test_todict_json_serializable(self):
         for fx in (self.fixtureStopSleep, self.fixtureStartSleep,

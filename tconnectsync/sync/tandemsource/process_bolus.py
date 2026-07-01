@@ -43,7 +43,7 @@ class ProcessBolus:
         # Correlate a bolus's request/completion messages by bolusid.
         bolusEventsForId = {}
         for event in sorted(events, key=lambda x: x.eventTimestamp):
-            bolusEventsForId.setdefault(event.bolusid, {})[type(event)] = event
+            bolusEventsForId.setdefault(event.bolusId, {})[type(event)] = event
 
         # Emit one Nightscout treatment per completion event, each at its own time:
         #  - LidBolusCompleted -> the standard / "now" bolus (carbs, bg, notes)
@@ -67,7 +67,7 @@ class ProcessBolus:
                 ns_entries.append(self.bolex_to_nsentry(event))
                 continue
 
-            m = bolusEventsForId[event.bolusid]
+            m = bolusEventsForId[event.bolusId]
             ns_entries.append(self.bolus_to_nsentry(
                 event,
                 bolusRequested1 = m.get(eventtypes.LidBolusRequestedMsg1),
@@ -92,10 +92,10 @@ class ProcessBolus:
 
     def bolus_to_nsentry(self, bolusCompleted: "BaseEvent", bolusRequested1: "BaseEvent", bolusRequested2: "BaseEvent", bolusRequested3: "BaseEvent") -> Optional[dict]:
         suffixes = []
-        if bolusRequested2 and bolusRequested2.useroverride == eventtypes.LidBolusRequestedMsg2.UseroverrideEnum.Yes:
+        if bolusRequested2 and bolusRequested2.userOverride == eventtypes.LidBolusRequestedMsg2.UseroverrideEnum.Yes:
             suffixes.append('(Override)')
 
-        if bolusRequested2 and bolusRequested2.declinedcorrection == eventtypes.LidBolusRequestedMsg2.DeclinedcorrectionEnum.Yes:
+        if bolusRequested2 and bolusRequested2.declinedCorrection == eventtypes.LidBolusRequestedMsg2.DeclinedcorrectionEnum.Yes:
             suffixes.append('(Declined Correction)')
 
         suffix = (' ' + (' '.join(suffixes))) if suffixes else ''
@@ -111,11 +111,11 @@ class ProcessBolus:
 
 
         return NightscoutEntry.bolus(
-            bolus = insulin_float_round(bolusCompleted.insulindelivered),
-            carbs = bolusRequested1.carbamount if bolusRequested1 and bolusRequested1.carbamount>0 else None,
+            bolus = insulin_float_round(bolusCompleted.insulinDelivered),
+            carbs = bolusRequested1.carbAmount if bolusRequested1 and bolusRequested1.carbAmount>0 else None,
             created_at = bolusCompleted.eventTimestamp.format(),
             notes = notes + suffix,
-            bg = bolusRequested1.BG if bolusRequested1 and bolusRequested1.BG > 0 else None,
+            bg = bolusRequested1.bg if bolusRequested1 and bolusRequested1.bg > 0 else None,
             pump_event_id = ",".join(seq_nums)
         )
 
@@ -124,7 +124,7 @@ class ProcessBolus:
         # the time it finished delivering. Insulin only; carbs/bg belong to the
         # initial LidBolusCompleted entry and must not be double-counted here.
         return NightscoutEntry.bolus(
-            bolus = insulin_float_round(bolexCompleted.insulindelivered),
+            bolus = insulin_float_round(bolexCompleted.insulinDelivered),
             carbs = None,
             created_at = bolexCompleted.eventTimestamp.format(),
             notes = "Extended Bolus",

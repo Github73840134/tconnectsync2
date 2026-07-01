@@ -59,22 +59,22 @@ class TestLidCgmJoinSessionG7(unittest.TestCase):
 
     def test_plain_fields_round_trip(self):
         ev = Event(self.fixtureLowCgmTs)
-        self.assertEqual(ev.cgmtimestamp, 3042)
-        self.assertEqual(ev.sessionsignature, 72)
+        self.assertEqual(ev.cgmTimestamp, 3042)
+        self.assertEqual(ev.sessionSignature, 72)
 
     def test_high_cgm_timestamp_fixture(self):
         ev = Event(self.fixtureHighCgmTs)
         self.assertEqual(ev.eventId, 394)
         self.assertEqual(ev.seqNum, 449825)
-        self.assertEqual(ev.cgmtimestamp, 51767)
-        self.assertEqual(ev.sessionsignature, 117)
+        self.assertEqual(ev.cgmTimestamp, 51767)
+        self.assertEqual(ev.sessionSignature, 117)
 
     def test_shared_signature_fixture(self):
         # Same sessionSignature as the high-cgm fixture but a distinct cgmTimestamp.
         ev = Event(self.fixtureSharedSignature)
         self.assertEqual(ev.seqNum, 481763)
-        self.assertEqual(ev.cgmtimestamp, 248)
-        self.assertEqual(ev.sessionsignature, 117)
+        self.assertEqual(ev.cgmTimestamp, 248)
+        self.assertEqual(ev.sessionSignature, 117)
 
     def test_todict_is_json_serializable(self):
         ev = Event(self.fixtureLowCgmTs)
@@ -83,8 +83,8 @@ class TestLidCgmJoinSessionG7(unittest.TestCase):
         self.assertEqual(d["id"], 394)
         self.assertEqual(d["name"], "LID_CGM_JOIN_SESSION_G7")
         self.assertEqual(d["seqNum"], 413856)
-        self.assertEqual(d["cgmtimestamp"], 3042)
-        self.assertEqual(d["sessionsignature"], 72)
+        self.assertEqual(d["cgmTimestamp"], 3042)
+        self.assertEqual(d["sessionSignature"], 72)
 
 
 if __name__ == "__main__":
