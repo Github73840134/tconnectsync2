@@ -32,7 +32,7 @@ GLUCOSE_LIMIT_HIGH = 400
 GLUCOSE_VALUE_LOW = 39
 GLUCOSE_VALUE_HIGH = 401
 
-def _resolve_glucose_value(display_value, status, precise, high, low):
+def _resolve_glucose_value(display_value, status, *, precise, high, low):
     if status == high:
         return GLUCOSE_VALUE_HIGH
     if status == low:
@@ -53,18 +53,21 @@ def determine_glucose_value(event: CgmReadingEvent) -> int:
 
     if isinstance(event, eventtypes.LidCgmDataG7):
         e = eventtypes.LidCgmDataG7.GlucosevaluestatusEnum
-        return _resolve_glucose_value(display_value, status, e.PreciseValue, e.SpecialHigh, e.SpecialLow)
+        return _resolve_glucose_value(display_value, status,
+                                      precise=e.PreciseValue, high=e.SpecialHigh, low=e.SpecialLow)
     if isinstance(event, eventtypes.LidCgmDataGxb):
         e = eventtypes.LidCgmDataGxb.GlucosevaluestatusEnum
         return _resolve_glucose_value(display_value, status,
-                                      e.CurrentglucosedisplayvalueContainsTheGlucoseReading,
-                                      e.TheGlucoseReadingIsHigh, e.TheGlucoseReadingIsLow)
+                                      precise=e.CurrentglucosedisplayvalueContainsTheGlucoseReading,
+                                      high=e.TheGlucoseReadingIsHigh, low=e.TheGlucoseReadingIsLow)
     if isinstance(event, eventtypes.LidCgmDataFsl3):
         e = eventtypes.LidCgmDataFsl3.GlucosevaluestatusEnum
-        return _resolve_glucose_value(display_value, status, e.PreciseValue, e.SpecialHigh, e.SpecialLow)
+        return _resolve_glucose_value(display_value, status,
+                                      precise=e.PreciseValue, high=e.SpecialHigh, low=e.SpecialLow)
     if isinstance(event, eventtypes.LidCgmDataFsl2):
         e = eventtypes.LidCgmDataFsl2.GlucosevaluestatusEnum
-        return _resolve_glucose_value(display_value, status, e.PreciseValue, e.SpecialHigh, e.SpecialLow)
+        return _resolve_glucose_value(display_value, status,
+                                      precise=e.PreciseValue, high=e.SpecialHigh, low=e.SpecialLow)
 
     return display_value
 
