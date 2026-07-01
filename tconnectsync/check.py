@@ -102,11 +102,11 @@ def check_login(tconnect, time_start, time_end, verbose=False, sanitize=True):
 
         log(f'ChooseDevice selected: {tconnectDevice}')
 
-        tconnectDeviceId = tconnectDevice['deviceId']
+        deviceId = tconnectDevice['deviceId']
 
-        log(f'Fetching pump events for {tconnectDeviceId=} {time_start=} {time_end=} fetch_all_event_types=False')
+        log(f'Fetching pump events for {deviceId=} {time_start=} {time_end=} fetch_all_event_types=False')
 
-        events = tconnect.tandemsource.pump_events(tconnectDeviceId, time_start, time_end, fetch_all_event_types=False)
+        events = tconnect.tandemsource.pump_events(deviceId, time_start, time_end, fetch_all_event_types=False)
         events = list(events)
 
         log(f"Found raw events count: {len(events)}")
