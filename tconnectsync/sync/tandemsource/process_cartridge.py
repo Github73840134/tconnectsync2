@@ -1,6 +1,6 @@
 import logging
 import arrow
-
+from tconnectsync.util.time import format_datetime
 from ...features import DEFAULT_FEATURES
 from ... import features
 from ...eventparser.generic import Events, decode_raw_events, EVENT_LEN
@@ -12,26 +12,20 @@ from ...parser.nightscout import (
     NightscoutEntry
 )
 
-from typing import Iterable, List, Optional, TYPE_CHECKING
-if TYPE_CHECKING:
-    from ...api import TConnectApi
-    from ...nightscout import NightscoutApi
-    from ...eventparser.raw_event import BaseEvent
-
 logger = logging.getLogger(__name__)
 
 class ProcessCartridge:
-    def __init__(self, tconnect: "TConnectApi", nightscout: "NightscoutApi", tconnect_device_id: str, pretend: bool, features: List[str] = DEFAULT_FEATURES) -> None:
+    def __init__(self, tconnect, nightscout, tconnect_device_id, pretend, features=DEFAULT_FEATURES):
         self.tconnect = tconnect
         self.nightscout = nightscout
         self.tconnect_device_id = tconnect_device_id
         self.pretend = pretend
         self.features = features
 
-    def enabled(self) -> bool:
+    def enabled(self):
         return features.PUMP_EVENTS in self.features
 
-    def process(self, events: Iterable, time_start: arrow.Arrow, time_end: arrow.Arrow) -> List[dict]:
+    def process(self, events, time_start, time_end):
         logger.debug("ProcessCartridge: querying for last uploaded entry")
         last_upload = self.nightscout.last_uploaded_entry(SITECHANGE_EVENTTYPE, time_start=time_start, time_end=time_end)
         last_upload_time = None
@@ -72,7 +66,7 @@ class ProcessCartridge:
 
         return ns_entries
 
-    def write(self, ns_entries: List[dict]) -> int:
+    def write(self, ns_entries):
         count = 0
         for entry in ns_entries:
             if self.pretend:
@@ -84,29 +78,23 @@ class ProcessCartridge:
 
         return count
 
-    def cart_to_nsentry(self, cartFilled: "BaseEvent") -> Optional[dict]:
-        # insulinVolume is populated on t:slim X2 / Mobi; v2Volume is a legacy fallback.
-        volume = cartFilled.insulinVolume or cartFilled.v2Volume
+    def cart_to_nsentry(self, cartFilled):
         return NightscoutEntry.sitechange(
-            created_at = cartFilled.eventTimestamp.format(),
-            reason = "Cartridge Filled" + (" (%du filled)" % round(volume) if volume else ""),
+            created_at = format_datetime(cartFilled.eventTimestamp),
+            reason = "Cartridge Filled" + (" (%du filled)" % round(cartFilled.v2Volume) if cartFilled.v2Volume else ""),
             pump_event_id = "%s" % cartFilled.seqNum
         )
 
-    def cannula_to_nsentry(self, cannulaFilled: "BaseEvent") -> Optional[dict]:
-        # primeSize is fractional (e.g. 0.3u); format with one decimal, not %d.
-        primed = cannulaFilled.primeSize if cannulaFilled.primeSize and cannulaFilled.primeSize > 0 else None
+    def cannula_to_nsentry(self, cannulaFilled):
         return NightscoutEntry.sitechange(
-            created_at = cannulaFilled.eventTimestamp.format(),
-            reason = "Cannula Filled" + (" (%.1fu primed)" % primed if primed else ""),
+            created_at = format_datetime(cannulaFilled.eventTimestamp),
+            reason = "Cannula Filled" + (" (%du primed)" % round(cannulaFilled.primesize, 2) if cannulaFilled.primesize else ""),
             pump_event_id = "%s" % cannulaFilled.seqNum
         )
 
-    def tubing_to_nsentry(self, tubingFilled: "BaseEvent") -> Optional[dict]:
-        # primeSize is -1 (sentinel, "not recorded") on real tubing fills; only show a real prime volume.
-        primed = tubingFilled.primeSize if tubingFilled.primeSize and tubingFilled.primeSize > 0 else None
+    def tubing_to_nsentry(self, tubingFilled):
         return NightscoutEntry.sitechange(
-            created_at = tubingFilled.eventTimestamp.format(),
-            reason = "Tubing Filled" + (" (%du primed)" % round(primed) if primed else ""),
+            created_at = format_datetime(tubingFilled.eventTimestamp),
+            reason = "Tubing Filled" + (" (%du primed)" % round(tubingFilled.primesize) if tubingFilled.primesize else ""),
             pump_event_id = "%s" % tubingFilled.seqNum
         )
