@@ -487,5 +487,78 @@ class TestProcessCGMReadingG7Json(unittest.TestCase):
         self.assertEqual([e['sgv'] for e in p], [118])
 
 
+# Real LID_CGM_DATA_GXB (Dexcom G6, eventCode 256) pump-logs JSON events captured
+# from a live t:slim X2 account (early 2023, deviceAssignmentId redacted). These
+# exercise the production path (Events -> ProcessCGMReading) for G6, in contrast
+# to the binary-decoded G6 events above.
+# steady, in-range (rate 0), sgv 106
+G6_JSON_1 = {"deviceAssignmentId": "00000000-0000-0000-0000-000000000000", "eventCode": 256, "sequenceGroup": 0, "sequenceNumber": 1079439, "pumpDateTime": "2023-01-08T09:08:34", "eventProperties": {"glucoseValueStatus": 0, "cgmDataType": [0], "rate": 0, "algorithmState": 6, "rssi": -61, "currentGlucoseDisplayValue": 106, "egvTimeStamp": 474023314, "egvInfoBitmask": [0, 5, 6, 7, 8, 11], "interval": 0, "reservedD15": 1}, "estimatedDateTime": "2023-01-08T09:08:34Z"}
+# rising fast (rate 127), sgv 197
+G6_JSON_2 = {"deviceAssignmentId": "00000000-0000-0000-0000-000000000000", "eventCode": 256, "sequenceGroup": 0, "sequenceNumber": 1083284, "pumpDateTime": "2023-01-09T14:28:40", "eventProperties": {"glucoseValueStatus": 0, "cgmDataType": [0], "rate": 127, "algorithmState": 6, "rssi": -76, "currentGlucoseDisplayValue": 197, "egvTimeStamp": 474128920, "egvInfoBitmask": [0, 5, 6, 7, 8, 11], "interval": 0, "reservedD15": 1}, "estimatedDateTime": "2023-01-09T14:28:40Z"}
+# high, sgv 316
+G6_JSON_3 = {"deviceAssignmentId": "00000000-0000-0000-0000-000000000000", "eventCode": 256, "sequenceGroup": 0, "sequenceNumber": 1108047, "pumpDateTime": "2023-01-18T02:43:48", "eventProperties": {"glucoseValueStatus": 0, "cgmDataType": [0], "rate": 7, "algorithmState": 6, "rssi": -82, "currentGlucoseDisplayValue": 316, "egvTimeStamp": 474864228, "egvInfoBitmask": [0, 5, 6, 7, 8, 11], "interval": 0, "reservedD15": 1}, "estimatedDateTime": "2023-01-18T02:43:48Z"}
+# SpecialLow (glucoseValueStatus 2): raw display 0, reported as the LOW sentinel 39
+G6_JSON_4 = {"deviceAssignmentId": "00000000-0000-0000-0000-000000000000", "eventCode": 256, "sequenceGroup": 0, "sequenceNumber": 1113165, "pumpDateTime": "2023-01-19T20:30:24", "eventProperties": {"glucoseValueStatus": 2, "cgmDataType": [0], "rate": -11, "algorithmState": 6, "rssi": -79, "currentGlucoseDisplayValue": 0, "egvTimeStamp": 475014624, "egvInfoBitmask": [0, 5, 6, 7, 8, 11], "interval": 0, "reservedD15": 1}, "estimatedDateTime": "2023-01-19T20:30:24Z"}
+# falling fast (rate -45), sgv 174
+G6_JSON_5 = {"deviceAssignmentId": "00000000-0000-0000-0000-000000000000", "eventCode": 256, "sequenceGroup": 0, "sequenceNumber": 1125216, "pumpDateTime": "2023-01-23T16:41:42", "eventProperties": {"glucoseValueStatus": 0, "cgmDataType": [0], "rate": -45, "algorithmState": 6, "rssi": -56, "currentGlucoseDisplayValue": 174, "egvTimeStamp": 475346502, "egvInfoBitmask": [0, 5, 6, 7, 8, 11], "interval": 0, "reservedD15": 1}, "estimatedDateTime": "2023-01-23T16:41:42Z"}
+
+
+class TestProcessCGMReadingG6Json(unittest.TestCase):
+    """G6 processor exercised via real pump-logs JSON (production path)."""
+    maxDiff = None
+
+    def setUp(self):
+        self.tconnect = TConnectApi()
+        self.nightscout = NightscoutApi()
+        self.nightscout.last_uploaded_bg_entry = lambda *args, **kwargs: None
+        self.process = ProcessCGMReading(self.tconnect, self.nightscout, 'abcdef', pretend=False, timezone='America/New_York')
+
+    def test_single_g6_json_reading(self):
+        events = list(Events([dict(G6_JSON_1)]))
+        self.assertEqual(type(events[0]), eventtypes.LidCgmDataGxb)
+        self.assertEqual(events[0].egvTimestamp, 474023314)
+
+        p = self.process.process(events, time_start=None, time_end=None)
+        self.assertEqual(len(p), 1)
+        self.assertEqual(p[0]['sgv'], 106)
+        self.assertEqual(p[0]['dateString'], '2023-01-08T09:08:34-0500')
+        self.assertEqual(p[0]['pump_event_id'], '1079439')
+
+    def test_diverse_glucose_range(self):
+        events = list(Events([
+            dict(G6_JSON_1), dict(G6_JSON_2), dict(G6_JSON_3),
+            dict(G6_JSON_4), dict(G6_JSON_5)
+        ]))
+        p = self.process.process(events, time_start=None, time_end=None)
+        # Sorted chronologically; the SpecialLow reading (raw display 0) is
+        # reported as the LOW sentinel 39.
+        self.assertEqual([e['sgv'] for e in p], [106, 197, 316, 39, 174])
+        self.assertEqual([e['dateString'] for e in p], [
+            '2023-01-08T09:08:34-0500',
+            '2023-01-09T14:28:40-0500',
+            '2023-01-18T02:43:48-0500',
+            '2023-01-19T20:30:24-0500',
+            '2023-01-23T16:41:42-0500',
+        ])
+        self.assertEqual([e['pump_event_id'] for e in p], [
+            '1079439', '1083284', '1108047', '1113165', '1125216'
+        ])
+
+    def test_special_low_reading(self):
+        # glucoseValueStatus SpecialLow reports the LOW sentinel (39), not the
+        # raw below-range display value (0).
+        events = list(Events([dict(G6_JSON_4)]))
+        p = self.process.process(events, time_start=None, time_end=None)
+        self.assertEqual(len(p), 1)
+        self.assertEqual(p[0]['sgv'], 39)
+
+    def test_skips_readings_at_or_before_last_upload(self):
+        # Only readings strictly after the last Nightscout upload are returned.
+        self.nightscout.last_uploaded_bg_entry = lambda *args, **kwargs: {'dateString': '2023-01-09T14:28:40-0500'}
+        events = list(Events([dict(G6_JSON_1), dict(G6_JSON_2), dict(G6_JSON_3)]))
+        p = self.process.process(events, time_start=None, time_end=None)
+        self.assertEqual([e['sgv'] for e in p], [316])
+
+
 if __name__ == '__main__':
     unittest.main()
