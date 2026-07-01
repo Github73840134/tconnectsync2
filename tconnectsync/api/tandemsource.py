@@ -103,7 +103,7 @@ class TandemSourceApi:
         'TDC_OAUTH_AUTHORIZE_URL': 'https://tdcservices.tandemdiabetes.com/accounts/api/oauth2/v1/authorize',
         'TDC_OIDC_JWKS_URL': 'https://tdcservices.tandemdiabetes.com/accounts/api/.well-known/openid-configuration/jwks',
         'TDC_OIDC_ISSUER': 'https://tdcservices.tandemdiabetes.com/accounts/api',
-        'TDC_OIDC_CLIENT_ID': '0oa27ho9tpZE9Arjy4h7',
+        'TDC_OIDC_CLIENT_ID': '0oa4wnbvtladeyVZX4h7',
         'SOURCE_URL': 'https://source.tandemdiabetes.com/',
         'REDIRECT_URI': 'https://sso.tandemdiabetes.com/auth/callback',
         'TOKEN_ENDPOINT': 'https://tdcservices.tandemdiabetes.com/accounts/api/connect/token',
