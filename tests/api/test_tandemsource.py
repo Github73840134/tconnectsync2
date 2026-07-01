@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
+import datetime
 import unittest
+import urllib.parse
 from unittest.mock import patch
 
 from tconnectsync.api.tandemsource import TandemSourceApi
@@ -151,6 +153,100 @@ class TestDefaultEventIds(unittest.TestCase):
         self.assertEqual(len(set(ids)), 55, "DEFAULT_EVENT_IDS contains duplicates")
         # FSL3 ids added for the BFF pump-logs endpoint
         self.assertTrue({477, 480, 486}.issubset(set(ids)))
+
+
+# Trimmed real-shape pump-logs response (1 event + 1 clockChange).
+PUMP_LOGS = {
+    "events": [
+        {
+            "deviceAssignmentId": "1b493210-9336-4901-a329-a352775738c5",
+            "eventCode": 16,
+            "sequenceGroup": 1,
+            "sequenceNumber": 100123,
+            "pumpDateTime": "2024-01-10T08:15:30",
+            "eventProperties": {"iob": 1.25, "bg": 112},
+            "estimatedDateTime": "2024-01-10T08:15:30Z",
+        }
+    ],
+    "clockChanges": [
+        {
+            "deviceAssignmentId": "1b493210-9336-4901-a329-a352775738c5",
+            "eventCode": 13,
+            "sequenceGroup": 0,
+            "sequenceNumber": 5,
+            "pumpDateTime": "2024-01-01T00:00:00",
+            "eventProperties": {"timePrior": 1, "timeAfter": 2, "rawRtcTime": 3},
+            "estimatedDateTime": "2024-01-01T00:00:00Z",
+        }
+    ],
+}
+
+
+class TestGetPumpLogs(unittest.TestCase):
+    maxDiff = None
+
+    def _api(self):
+        api = TandemSourceApi.__new__(TandemSourceApi)
+        api.pumperId = "PUMPER123"
+        return api
+
+    def _endpoint(self, mock_get):
+        mock_get.assert_called_once()
+        # (endpoint, query_dict) positional args
+        self.assertEqual(mock_get.call_args.args[1], {})
+        return mock_get.call_args.args[0]
+
+    def _qs(self, endpoint, keep_blank=False):
+        parsed = urllib.parse.urlparse(endpoint)
+        return parsed.path, urllib.parse.parse_qs(parsed.query, keep_blank_values=keep_blank)
+
+    def test_endpoint_path_and_params(self):
+        api = self._api()
+        with patch.object(TandemSourceApi, "get", return_value=PUMP_LOGS) as mock_get:
+            api.get_pump_logs("dev-uuid", min_date="2024-01-01", max_date="2024-01-15")
+        endpoint = self._endpoint(mock_get)
+        path, qs = self._qs(endpoint)
+        self.assertEqual(path, "api/reports/bff/pump-logs/dev-uuid")
+        self.assertEqual(qs["pumperId"], ["PUMPER123"])
+        self.assertEqual(qs["startDate"], ["2024-01-01T00:00:00Z"])
+        self.assertEqual(qs["endDate"], ["2024-01-15T23:59:59Z"])
+
+    def test_default_event_ids_comma_joined(self):
+        api = self._api()
+        with patch.object(TandemSourceApi, "get", return_value=PUMP_LOGS) as mock_get:
+            api.get_pump_logs("dev", min_date="2024-01-01", max_date="2024-01-02")
+        _, qs = self._qs(self._endpoint(mock_get))
+        self.assertEqual(qs["eventIds"][0].split(","),
+                         [str(i) for i in TandemSourceApi.DEFAULT_EVENT_IDS])
+
+    def test_custom_event_ids_comma_joined(self):
+        api = self._api()
+        with patch.object(TandemSourceApi, "get", return_value=PUMP_LOGS) as mock_get:
+            api.get_pump_logs("dev", "2024-01-01", "2024-01-02", event_ids_filter=[16, 5, 28])
+        _, qs = self._qs(self._endpoint(mock_get))
+        self.assertEqual(qs["eventIds"], ["16,5,28"])
+
+    def test_none_event_ids_empty(self):
+        api = self._api()
+        with patch.object(TandemSourceApi, "get", return_value=PUMP_LOGS) as mock_get:
+            api.get_pump_logs("dev", "2024-01-01", "2024-01-02", event_ids_filter=None)
+        _, qs = self._qs(self._endpoint(mock_get), keep_blank=True)
+        self.assertEqual(qs["eventIds"], [""])
+
+    def test_return_value_passthrough(self):
+        api = self._api()
+        with patch.object(TandemSourceApi, "get", return_value=PUMP_LOGS):
+            result = api.get_pump_logs("dev", "2024-01-01", "2024-01-15")
+        self.assertIs(result, PUMP_LOGS)
+
+    def test_none_dates_default_to_today(self):
+        api = self._api()
+        with patch.object(TandemSourceApi, "get", return_value=PUMP_LOGS) as mock_get:
+            api.get_pump_logs("dev")
+        _, qs = self._qs(self._endpoint(mock_get))
+        today = datetime.datetime.now().strftime('%Y-%m-%d')
+        self.assertEqual(qs["startDate"], ["%sT00:00:00Z" % today])
+        self.assertEqual(qs["endDate"], ["%sT23:59:59Z" % today])
 
 
 if __name__ == "__main__":

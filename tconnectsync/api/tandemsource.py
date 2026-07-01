@@ -168,6 +168,33 @@ class PumpMetadata(TypedDict, total=False):
     settings: Optional[dict]
 
 
+class PumpLogEvent(TypedDict):
+    """One entry in a PumpLogsResponse (events[] or clockChanges[]) from
+    GET api/reports/bff/pump-logs/{deviceAssignmentId}. The server pre-decodes
+    each event, so eventProperties holds already-decoded per-event fields
+    (values are int/float/list/str keyed by camelCase field name).
+
+    pumpDateTime is the pump's local wall-clock time (ISO-8601, no tz);
+    estimatedDateTime is the same value with a 'Z' suffix. eventCode matches
+    the numeric event id in EVENT_IDS; sequenceNumber is the old seqNum.
+    """
+    deviceAssignmentId: str
+    eventCode: int
+    sequenceGroup: int
+    sequenceNumber: int
+    pumpDateTime: str
+    eventProperties: Dict[str, Any]
+    estimatedDateTime: str
+
+
+class PumpLogsResponse(TypedDict):
+    """Response of GET api/reports/bff/pump-logs/{deviceAssignmentId}. Replaces
+    the old base64 reportsfacade/pumpevents payload. clockChanges (eventCodes
+    13/14) are returned separately and span the device's full history."""
+    events: List[PumpLogEvent]
+    clockChanges: List[PumpLogEvent]
+
+
 class TandemSourceApi:
     # Common URLs that are shared between regions
     LOGIN_PAGE_URL = 'https://sso.tandemdiabetes.com/'
@@ -616,6 +643,24 @@ class TandemSourceApi:
     # Matches the Tandem Source web app's getLogIDList() (55 IDs) as observed in
     # the live GET api/reports/bff/pump-logs request. Includes FSL3 ids 477/480/486.
     DEFAULT_EVENT_IDS: List[int] = [229,5,28,4,26,99,279,3,16,59,21,55,20,280,64,65,66,61,33,371,171,369,460,172,370,461,372,480,399,256,213,406,477,394,212,404,214,405,486,447,313,60,14,6,90,230,140,12,11,53,13,63,203,307,191]
+
+    def get_pump_logs(self, device_id: str, min_date: Optional[str] = None, max_date: Optional[str] = None, event_ids_filter: Optional[List[int]] = DEFAULT_EVENT_IDS) -> PumpLogsResponse:
+        """Fetch pre-decoded pump events for a single date window from the BFF
+        endpoint GET api/reports/bff/pump-logs/{device_id}. device_id is the
+        UUID assignmentId (PumpMetadata.deviceId). Returns {events, clockChanges}.
+        The server caps the window at ~4 weeks; callers needing a longer range
+        must page by date window (see pump_events)."""
+        minDate = parse_ymd_date(min_date)
+        maxDate = parse_ymd_date(max_date)
+        logger.debug(f'get_pump_logs({device_id}, {minDate}, {maxDate})')
+
+        query = urllib.parse.urlencode({
+            'pumperId': self.pumperId,
+            'startDate': '%sT00:00:00Z' % minDate,
+            'endDate': '%sT23:59:59Z' % maxDate,
+            'eventIds': ','.join(map(str, event_ids_filter)) if event_ids_filter else '',
+        })
+        return self.get('api/reports/bff/pump-logs/%s?%s' % (device_id, query), {})
 
     """
     Returns raw unparsed string for pump events.
