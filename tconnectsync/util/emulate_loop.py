@@ -24,9 +24,9 @@ def UpdateLoop(nightscout,tc,tcd):
 			},
 			"enacted": {
 				"timestamp": time,
-				"rate": lastbasalrate['absolute'],
-				"duration": 5
-				},
+			"rate": lastbasalrate['absolute'],
+			"duration": 5
+			},
 			
 		},
 		"pump": {

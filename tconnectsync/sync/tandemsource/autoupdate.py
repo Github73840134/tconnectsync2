@@ -129,12 +129,15 @@ class TandemSourceAutoupdate:
                         int(self.secret.AUTOUPDATE_UNEXPECTED_NO_INDEX_SLEEP_SECONDS)))
 
                     logger.debug("Last event time: %s, time diffs between attempts: %s" % (self.last_event_time, self.time_diffs_between_attempts))
-
+                    if self.secret.EMULATE_LOOP:
+                        UpdateLoop(nightscout,tconnect,tconnectDevice["assignmentId"],)
                     time.sleep(self.secret.AUTOUPDATE_UNEXPECTED_NO_INDEX_SLEEP_SECONDS)
 
                     # Since we bail early, update the invocations count and potentially exit after sleeping.
                     self.autoupdate_invocations += 1
                     if self.secret.AUTOUPDATE_MAX_LOOP_INVOCATIONS > 0 and self.autoupdate_invocations >= self.secret.AUTOUPDATE_MAX_LOOP_INVOCATIONS:
+                        if self.secret.EMULATE_LOOP:
+                            UpdateLoop(nightscout,tconnect,tconnectDevice["assignmentId"],)
                         return 0
 
                     continue
