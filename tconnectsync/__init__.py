@@ -127,7 +127,8 @@ def main(*args, **kwargs):
     if args.auto_update:
         u = TandemSourceAutoupdate(secret)
         u.process(tconnect, nightscout, args.pretend, features=args.features)
-
+        if EMULATE_LOOP:
+            UpdateLoop(nightscout,tconnect,tconnectDevice["assignmentId"],)
         sys.exit()
     else:
         tconnectDevice = TandemSourceChooseDevice(secret, tconnect).choose()
