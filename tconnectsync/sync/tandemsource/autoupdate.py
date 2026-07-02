@@ -5,7 +5,11 @@ import sys
 import arrow
 
 from ...features import DEFAULT_FEATURES
+
+
 from ...api.tandemsource import naive_local_to_utc
+from ...util.emulate_loop import UpdateLoop
+
 from .process import ProcessTimeRange
 from .choose_device import ChooseDevice
 
@@ -134,7 +138,7 @@ class TandemSourceAutoupdate:
                         return 0
 
                     continue
-
+            
             sleep_secs = self.secret.AUTOUPDATE_DEFAULT_SLEEP_SECONDS
 
             # Sleep for a rolling average of time between updates
@@ -153,7 +157,8 @@ class TandemSourceAutoupdate:
                 # of how often we're seeing new data appear
                 if sleep_secs > self.secret.AUTOUPDATE_MAX_SLEEP_SECONDS:
                     sleep_secs = self.secret.AUTOUPDATE_MAX_SLEEP_SECONDS
-
+            if self.secret.EMULATE_LOOP:
+                UpdateLoop(nightscout,tconnect,tconnectDevice["assignmentId"],)
             logger.info('Sleeping for %0.01f sec' % sleep_secs)
             time.sleep(sleep_secs)
 
