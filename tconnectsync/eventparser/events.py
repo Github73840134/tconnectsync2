@@ -6209,28 +6209,17 @@ class LidDailyBasal(BaseEvent):
     dailyTotalBasal: float # units
     lastBasalRate: float # units/hour
     iob: float # units
-    batteryChargePercentMSBRaw: int
-    batteryChargePercentLSBRaw: int
-    batteryLipoMilliVolts: int
     batterychargepercent: int
     batterylipomillivolts: int
-    batterychargepercent: int
-    batterystatusRaw: int
+
 
     @property
     def batteryChargePercent(self):
-        return self.batterychargepercent / 100
+        return self.batterychargepercent
 
     @property
-    def batterychargepercentmsbRaw(self):
-        return (self.batterylipomillivolts >> 8) & 0xff
-
-    @property
-    def batterychargepercentlsbRaw(self):
-        return self.batterylipomillivolts & 0xff
-    @property
-    def batteryChargePercent(self):
-        return (256*(self.batteryChargePercentMSBRaw-14)+self.batteryChargePercentLSBRaw)/(3*256)
+    def batteryLipoMilliVolts(self):
+        return self.batterylipomillivolts
 
     @staticmethod
     def build(raw):
@@ -6259,9 +6248,8 @@ class LidDailyBasal(BaseEvent):
             dailyTotalBasal = props.get("dailytotalbasal", None),
             lastBasalRate = props.get("lastbasalrate", None),
             iob = props.get("iob", None),
-            batteryChargePercentMSBRaw = props.get("batterychargepercentmsbraw", None),
-            batteryChargePercentLSBRaw = props.get("batterychargepercentlsbraw", None),
-            batteryLipoMilliVolts = props.get("batterylipomillivolts", None),
+            batterychargepercent=props.get("abc", None),
+            batterylipomillivolts = props.get("lipomv", None),
         )
 
     @property
@@ -6287,7 +6275,7 @@ class LidDailyBasal(BaseEvent):
             iob=self.iob,
             batterylipomillivolts=self.batterylipomillivolts,
             batterychargepercent=self.batterychargepercent,
-            batterystatusRaw=self.batterystatusRaw,
+            batterystatusRaw=self.batterylipomillivolts,
         )
 
 

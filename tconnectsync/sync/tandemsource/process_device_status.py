@@ -73,13 +73,14 @@ class ProcessDeviceStatus:
         # The battery percent is derived from the msb/lsb raw fields; if the
         # event arrived without them (an event shape we can't yet parse), skip
         # it rather than raise on the arithmetic below.
-        if event.batteryChargePercentMSBRaw is None or event.batteryChargePercentLSBRaw is None:
+        print("EVENT",event)
+        if event.batterylipomillivolts == None or event.batterychargepercent is None:
             logger.warning("ProcessDeviceStatus: skipping daily basal event missing battery data: %s" % event)
             return None
 
         return NightscoutEntry.devicestatus(
             created_at=format_datetime(event.eventTimestamp),
-            batteryVoltage=(float(event.batteryLipoMilliVolts or 0)/1000),
+            batteryVoltage=(float(event.batterylipomillivolts or 0)/1000),
             batteryPercent=event.batterychargepercent,
             pump_event_id = "%s" % event.seqNum
         )
